@@ -6,8 +6,11 @@ import glm
 import math
 
 def setup_window(window_width, window_height, window_name):
+    # inicializa o GLFW
+    if not glfw.init():
+        raise RuntimeError("Erro ao inicializar o GLFW")
+
     # inicializa o sistema de janela
-    glfw.init()
     glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
     window = glfw.create_window(window_width, window_height, window_name, None, None)
     glfw.make_context_current(window)
@@ -47,14 +50,14 @@ def setup_window(window_width, window_height, window_name):
     if not glGetShaderiv(vertex, GL_COMPILE_STATUS):
         error = glGetShaderInfoLog(vertex).decode()
         print(error)
-        raise RuntimeError("Erro de compilacao do Vertex Shader")
+        raise RuntimeError("Erro de compilação do Vertex Shader")
 
     # compilando fragment shaders
     glCompileShader(fragment)
     if not glGetShaderiv(fragment, GL_COMPILE_STATUS):
         error = glGetShaderInfoLog(fragment).decode()
         print(error)
-        raise RuntimeError("Erro de compilacao do Fragment Shader")
+        raise RuntimeError("Erro de compilação do Fragment Shader")
 
     # associando os programas compilado ao programa principal
     glAttachShader(program, vertex)
@@ -156,7 +159,7 @@ def main():
 
     loc = glGetAttribLocation(program, "position")
     glEnableVertexAttribArray(loc)
-    glVertexAttribPointer(loc, 3, GL_FLOAT, False, stride, offset)
+    glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, stride, offset)
     loc_color = glGetUniformLocation(program, "color")
 
     z_camera_pos = 5.0
@@ -175,7 +178,7 @@ def main():
     glEnable(GL_DEPTH_TEST) ### importante para 3D
     
     while not glfw.window_should_close(window):
-        glfw.poll_events() 
+        glfw.poll_events()
         
         # limpa a cor de fundo da janela e preenche com outra no sistema RGBA
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -199,10 +202,8 @@ def main():
         glUniformMatrix4fv(loc_projection, 1, GL_TRUE, mat_projection)    
         
         # renderizando a cada três vértices (triangulos)
-        gray = 0.0
         for i in range(0, len(vertexes['position']),3):
-            gray = i/(len(vertexes))
-            glUniform4f(loc_color, gray, gray, gray, 1.0) ### definindo uma cor
+            glUniform4f(loc_color, 0.3, 1.0, 0.2, 1.0) ### definindo uma cor
             glDrawArrays(GL_TRIANGLES, i, 3)
         
         glfw.swap_buffers(window)

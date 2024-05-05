@@ -25,17 +25,17 @@ class ProgramFacade:
             """)
 
     @staticmethod
-    def _compile_shaders(vertex_shader: GLuint, fragment_shader: GLuint) -> None:
+    def __compile_shaders(vertex_shader: GLuint, fragment_shader: GLuint) -> None:
         glCompileShader(vertex_shader)
         glCompileShader(fragment_shader)
 
     @staticmethod
-    def _attach_shaders(program, vertex_shader: GLuint, fragment_shader: GLuint) -> None:
+    def __attach_shaders(program, vertex_shader: GLuint, fragment_shader: GLuint) -> None:
         glAttachShader(program, vertex_shader)
         glAttachShader(program, fragment_shader)
 
     @classmethod
-    def _bind_shaders_sources(cls, vertex_shader: GLuint, fragment_shader: GLuint) -> None:
+    def __bind_shaders_sources(cls, vertex_shader: GLuint, fragment_shader: GLuint) -> None:
         glShaderSource(vertex_shader, cls.VERTEX_CODE)
         glShaderSource(fragment_shader, cls.FRAGMENT_CODE)
 
@@ -46,9 +46,9 @@ class ProgramFacade:
         vertex = glCreateShader(GL_VERTEX_SHADER)
         fragment = glCreateShader(GL_FRAGMENT_SHADER)
 
-        cls._bind_shaders_sources(vertex, fragment)
-        cls._compile_shaders(vertex, fragment)
-        cls._attach_shaders(program, vertex, fragment)
+        cls.__bind_shaders_sources(vertex, fragment)
+        cls.__compile_shaders(vertex, fragment)
+        cls.__attach_shaders(program, vertex, fragment)
 
         # construção do programa
         glLinkProgram(program)

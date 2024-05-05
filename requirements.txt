@@ -1,0 +1,4 @@
+PyOpenGL==3.1.7
+glfw==2.7.0
+PyGlm==2.7.1
+numpy==2.0.0rc1

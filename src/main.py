@@ -2,7 +2,7 @@ from OpenGL.GL import *
 import glfw
 import numpy as np
 
-from window import setup_window
+from src.facade import WindowFacade, ProgramFacade
 from cube import Cube
 from camera import Camera
 
@@ -45,7 +45,8 @@ def cursor_event(window, x_pos, y_pos):
 
 
 def main():
-    window, program = setup_window(window_width, window_height, "MineTest")
+    window = WindowFacade.setup_window(window_width, window_height, "MineTest")
+    program = ProgramFacade.setup_program()
 
     # inicialização do objeto em cena
     obj = Cube(program, [0.0, 0.0, 0.0])

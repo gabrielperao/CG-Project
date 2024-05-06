@@ -64,19 +64,19 @@ class Cube:
         glEnableVertexAttribArray(self.loc_vertexes)
         glVertexAttribPointer(self.loc_vertexes, 3, GL_FLOAT, GL_FALSE, stride, offset)
 
-    def render(self, camera_position, camera_target, camera_up, window_height, window_width, fov, near, far):
+    def render(self, window_height, window_width, camera):
         # cálculo da matriz model e manda para a GPU
         mat_model = matrix_model(self.coord[0], self.coord[1], self.coord[2])
         loc_model = glGetUniformLocation(self.program, "model")
         glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
 
         # cálculo da matriz view e manda para a GPU
-        mat_view = matrix_view(camera_position, camera_target, camera_up)
+        mat_view = matrix_view(camera.position, camera.target, camera.up)
         loc_view = glGetUniformLocation(self.program, "view")
         glUniformMatrix4fv(loc_view, 1, GL_TRUE, mat_view)
 
         # cálculo da matriz projection e manda para a GPU
-        mat_projection = matrix_projection(window_height, window_width, fov, near, far)
+        mat_projection = matrix_projection(window_height, window_width, camera.fov, camera.near, camera.far)
         loc_projection = glGetUniformLocation(self.program, "projection")
         glUniformMatrix4fv(loc_projection, 1, GL_TRUE, mat_projection)
 

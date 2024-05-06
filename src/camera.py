@@ -1,8 +1,6 @@
 import glm
 import numpy as np
 
-# TODO: ajustar o movimento da câmera que está meio bugado ainda, principalmente em movimentos perpendiculares
-
 
 class Camera:
     def __init__(self, sensibility, step, fov, near, far):
@@ -37,3 +35,8 @@ class Camera:
         self.position.x += self.step * self.velocity[0]
         self.position.y += self.step * self.velocity[1]
         self.position.z += self.step * self.velocity[2]
+
+    def update_targets(self):
+        self.target.x += self.step * self.velocity[0]
+        self.target.y += self.step * self.velocity[1]
+        self.target.z += self.step * self.velocity[2]

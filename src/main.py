@@ -8,7 +8,10 @@ from camera import Camera
 
 window_width = 700
 window_height = 500
-camera = Camera(sensibility=12, step=0.001, fov=45.0, near=1, far=10)
+old_x_pos = 0
+old_y_pos = 0
+
+camera = Camera(sensibility=0.2, step=0.001, fov=45.0, near=1, far=10)
 render_polygons = False
 
 
@@ -40,8 +43,24 @@ def key_event(window, key, scancode, action, mods):
 
 
 def cursor_event(window, x_pos, y_pos):
-    camera.target.x = camera.sensibility * (x_pos - (window_width / 2)) / window_width
-    camera.target.y = -camera.sensibility * (y_pos - (window_height / 2)) / window_height
+    global old_x_pos, old_y_pos
+
+    dx_pos = 0
+    if np.abs(x_pos - old_x_pos) < window_width / 4:
+        dx_pos = x_pos - old_x_pos
+
+    dy_pos = 0
+    if np.abs(y_pos - old_y_pos) < window_height / 4:
+        dy_pos = y_pos - old_y_pos
+
+    dx_angle = camera.fov * dx_pos / window_width
+    dy_angle = camera.fov * dy_pos / window_height
+
+    camera.target.x += camera.sensibility * np.sin(dx_angle)
+    camera.target.y -= camera.sensibility * np.sin(dy_angle)
+    camera.target.z -= camera.sensibility * np.sin(dx_angle) * np.cos(dy_angle)
+    old_x_pos = x_pos
+    old_y_pos = y_pos
 
 
 def main():
@@ -74,8 +93,9 @@ def main():
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
         # renderização e atualização do objeto
-        obj.render(camera.position, camera.target, camera.up, window_height, window_width, camera.fov, camera.near, camera.far)
+        obj.render(window_height, window_width, camera)
         camera.update_position()
+        camera.update_targets()
 
         glfw.swap_buffers(window)
 

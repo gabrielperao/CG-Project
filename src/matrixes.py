@@ -3,10 +3,11 @@ import numpy as np
 import math
 
 
-def matrix_model(coord_x, coord_y, coord_z):
+def matrix_model(coord=(0.0, 0.0, 0.0), scale=(1.0, 1.0, 1.0), rotate=(1.0, 0.0, 0.0), angle=0.0):
     matrix_transform = glm.mat4(1.0)  # instanciando uma matriz identidade
-    matrix_transform = glm.rotate(matrix_transform, math.radians(180), glm.vec3(0.0, 0.0, 1.0))
-    matrix_transform = glm.translate(matrix_transform, glm.vec3(coord_x, coord_y, coord_z))
+    matrix_transform = glm.scale(matrix_transform, glm.vec3(scale[0], scale[1], scale[2]))
+    matrix_transform = glm.rotate(matrix_transform, math.radians(angle), glm.vec3(rotate[0], rotate[1], rotate[2]))
+    matrix_transform = glm.translate(matrix_transform, glm.vec3(coord[0], coord[1], coord[2]))
     matrix_transform = np.array(matrix_transform)
     return matrix_transform
 

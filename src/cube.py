@@ -66,7 +66,7 @@ class Cube:
 
     def render(self, window_height, window_width, camera):
         # cálculo da matriz model e manda para a GPU
-        mat_model = matrix_model(self.coord[0], self.coord[1], self.coord[2])
+        mat_model = matrix_model(coord=self.coord)
         loc_model = glGetUniformLocation(self.program, "model")
         glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
 

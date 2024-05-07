@@ -3,15 +3,15 @@ import glfw
 import numpy as np
 
 from src.facade import WindowFacade, ProgramFacade
+from src.camera import Camera, CameraMovement
 from cube import Cube
-from camera import Camera
 
 window_width = 700
 window_height = 500
 old_x_pos = 0
 old_y_pos = 0
 
-camera = Camera(sensibility=0.2, step=0.003, fov=45.0, near=1, far=10)
+camera = Camera(sensibility=0.2, step=0.003, fov=45.0, near=0.01, far=1000.0)
 render_polygons = False
 
 
@@ -21,17 +21,17 @@ def key_event(window, key, scancode, action, mods):
     # tecla pressionada
     if action == glfw.PRESS:
         if key == 87:  # W
-            camera.velocity = camera.direction()
+            camera.movement = CameraMovement.FRONT
         if key == 83:  # S
-            camera.velocity = -1 * camera.direction()
+            camera.movement = CameraMovement.BACK
         if key == 65:  # A
-            camera.velocity = -1 * camera.perpendicular_direction()
+            camera.movement = CameraMovement.LEFT
         if key == 68:  # D
-            camera.velocity = camera.perpendicular_direction()
+            camera.movement = CameraMovement.RIGHT
         if key == 90:  # Z
-            camera.velocity = np.array([0.0, -1.0, 0.0])
+            camera.movement = CameraMovement.DOWN
         if key == 32:  # space
-            camera.velocity = np.array([0.0, 1.0, 0.0])
+            camera.movement = CameraMovement.UP
 
         # alterar o modo de visualização dos polígonos
         if key == 80:  # P
@@ -39,7 +39,7 @@ def key_event(window, key, scancode, action, mods):
 
     # tecla liberada
     if action == glfw.RELEASE:
-        camera.velocity = np.zeros(3)
+        camera.movement = CameraMovement.STOP
 
 
 def cursor_event(window, x_pos, y_pos):
@@ -97,7 +97,6 @@ def main():
         obj.render(window_height, window_width, camera)
         obj2.render(window_height, window_width, camera)
         camera.update_position()
-        camera.update_target()
 
         glfw.swap_buffers(window)
 

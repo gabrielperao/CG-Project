@@ -20,6 +20,5 @@ def matrix_view(camera_position, camera_target, camera_up):
 
 def matrix_projection(height, width, fov, near, far):
     mat_projection = glm.perspective(glm.radians(fov), width / height, near, far)
-    mat_projection = np.array(mat_projection).T
-    mat_projection[2, 2] = mat_projection[2, 2] * -1
+    mat_projection = np.array(mat_projection)
     return mat_projection

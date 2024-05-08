@@ -3,27 +3,28 @@ class ModelLoader:
     @staticmethod
     def load_from_file(filename: str) -> dict:
         """Loads a Wavefront OBJ file. """
-        objects = {}
-        vertices = []
-        texture_coords = []
+        vertexes = []
+        texture_coord = []
         faces = []
-
         material = None
 
-        for line in open(filename, "r"):  # para cada linha do arquivo .obj
+        # itera sobre as linhas do arquivo .obj
+        for line in open(filename, "r"):
+            # ignora as linhas de comentários
             if line.startswith('#'):
-                continue  # ignora comentarios
-            values = line.split()  # quebra a linha por espaço
+                continue
+            # separa os valores da linha pelo espaço
+            values = line.split()
             if not values:
                 continue
 
-            if values[0] == 'v':  # recuperando vertices
-                vertices.append(values[1:4])
-            elif values[0] == 'vt':  # recuperando coordenadas de textura
-                texture_coords.append(values[1:3])
+            if values[0] == 'v':  # coordenadas dos vértices
+                vertexes.append(values[1:4])
+            elif values[0] == 'vt':  # coordenadas de textura
+                texture_coord.append(values[1:3])
             elif values[0] in ('usemtl', 'usemat'):
                 material = values[1]
-            elif values[0] == 'f':  # recuperando faces
+            elif values[0] == 'f':  # mapeamento das faces
                 face = []
                 face_texture = []
                 for v in values[1:]:
@@ -36,5 +37,4 @@ class ModelLoader:
 
                 faces.append((face, face_texture, material))
 
-        model = {'vertices': vertices, 'texture': texture_coords, 'faces': faces}
-        return model
+        return {'vertices': vertexes, 'texture': texture_coord, 'faces': faces}

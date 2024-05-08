@@ -74,10 +74,11 @@ def main():
     TextureLoader.load_from_file(TextureId.GRASS_TEXTURE, texture_filename)
 
     # inicialização do objeto em cena
-    obj = Cube(program, [0.0, 0.0, 0.0], TextureId.GRASS_TEXTURE)
+    texture_obj_path = "src\\texture\\block\\grass\\Grass_Block.obj"
+    obj = Cube(program, [0.0, 0.0, 0.0], texture_obj_path, TextureId.GRASS_TEXTURE)
     obj.send_data_to_gpu()
 
-    obj2 = Cube(program, [1.2, 0.4, 0.1], TextureId.GRASS_TEXTURE)
+    obj2 = Cube(program, [1.2, 0.4, 0.1], texture_obj_path, TextureId.GRASS_TEXTURE)
     obj2.send_data_to_gpu()
 
     # ouve os eventos do teclado e mouse

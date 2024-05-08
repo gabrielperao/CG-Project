@@ -8,7 +8,7 @@ from src.texture import TextureId
 
 
 class Cube:
-    def __init__(self, program, coord: list, texture_id: TextureId):
+    def __init__(self, program, coord: list, texture_obj_path: str, texture_id: TextureId):
         self.program = program
         self.coord = coord
 
@@ -18,73 +18,59 @@ class Cube:
 
         # TODO: modularize
         # TODO: take model and texture load from Cube class and put somewhere else. Only needs to execute once per object class
-        self.model_filename = PathHelper.get_abs_path("src\\texture\\block\\grass\\Grass_Block.obj")
+        self.model_filename = PathHelper.get_abs_path(texture_obj_path)
         self.model = ModelLoader.load_from_file(self.model_filename)
 
-        self.texture_coords = []
-        self.vertexes_coords = []
-        self.configure_coords()
+        self.texture_coord = []
+        self.vertexes_coord = []
+        self.configure_coord()
 
-        self.texture = np.zeros(len(self.texture_coords), [("position", np.float32, 2)])
-        self.texture['position'] = self.texture_coords
+        self.texture = np.zeros(len(self.texture_coord), [("position", np.float32, 2)])
+        self.texture['position'] = self.texture_coord
         self.texture_id = texture_id
 
-        self.vertexes = np.zeros(len(self.vertexes_coords), [("position", np.float32, 3)])
-        self.vertexes['position'] = self.vertexes_coords
+        self.vertexes = np.zeros(len(self.vertexes_coord), [("position", np.float32, 3)])
+        self.vertexes['position'] = self.vertexes_coord
+
+    def __send_array_to_gpu(self, array, gpu_var_name, data_dimension):
+        buffer = glGenBuffers(1)
+        glBindBuffer(GL_ARRAY_BUFFER, buffer)
+        glBufferData(GL_ARRAY_BUFFER, array.nbytes, array, GL_DYNAMIC_DRAW)
+
+        stride = array.strides[0]
+        offset = ctypes.c_void_p(0)
+
+        loc_vertexes = glGetAttribLocation(self.program, gpu_var_name)
+        glEnableVertexAttribArray(loc_vertexes)
+        glVertexAttribPointer(loc_vertexes, data_dimension, GL_FLOAT, False, stride, offset)
 
     def send_data_to_gpu(self):
-        buffer = glGenBuffers(2)
-        self.__send_vertexes_to_gpu(buffer)
-        self.__send_texture_to_gpu(buffer)
+        self.__send_array_to_gpu(self.vertexes, "position", 3)
+        self.__send_array_to_gpu(self.texture, "texture_coord", 2)
 
-    def __send_vertexes_to_gpu(self, buffer):
-        glBindBuffer(GL_ARRAY_BUFFER, buffer[0])
-        glBufferData(GL_ARRAY_BUFFER, self.vertexes.nbytes, self.vertexes, GL_DYNAMIC_DRAW)
-
-        stride = self.vertexes.strides[0]
-        offset = ctypes.c_void_p(0)
-
-        loc_vertexes = glGetAttribLocation(self.program, "position")
-        glEnableVertexAttribArray(loc_vertexes)
-        glVertexAttribPointer(loc_vertexes, 3, GL_FLOAT, False, stride, offset)
-
-    def __send_texture_to_gpu(self, buffer):
-        glBindBuffer(GL_ARRAY_BUFFER, buffer[1])
-        glBufferData(GL_ARRAY_BUFFER, self.texture.nbytes, self.texture, GL_DYNAMIC_DRAW)
-
-        stride = self.texture.strides[0]
-        offset = ctypes.c_void_p(0)
-
-        loc_texture = glGetAttribLocation(self.program, "texture_coord")
-        glEnableVertexAttribArray(loc_texture)
-        glVertexAttribPointer(loc_texture, 2, GL_FLOAT, False, stride, offset)
-
-    def configure_coords(self):
+    def configure_coord(self):
         for face in self.model['faces']:
             for vertex_id in face[0]:
-                self.vertexes_coords.append(self.model['vertices'][vertex_id - 1])
+                self.vertexes_coord.append(self.model['vertices'][vertex_id - 1])
             for texture_id in face[1]:
-                self.texture_coords.append(self.model['texture'][texture_id - 1])
+                self.texture_coord.append(self.model['texture'][texture_id - 1])
+
+    def __send_matrix_to_gpu(self, matrix, gpu_var_name):
+        loc_matrix = glGetUniformLocation(self.program, gpu_var_name)
+        glUniformMatrix4fv(loc_matrix, 1, GL_TRUE, matrix)
 
     def render(self, window_height, window_width, camera):
-        # cálculo da matriz model e manda para a GPU
+        # cálculo das matrizes do objeto e envio para a gpu
         mat_model = matrix_model(coord=self.coord)
-        loc_model = glGetUniformLocation(self.program, "model")
-        glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
+        self.__send_matrix_to_gpu(mat_model, "model")
 
-        # cálculo da matriz view e manda para a GPU
         mat_view = matrix_view(camera.position, camera.target, camera.up)
-        loc_view = glGetUniformLocation(self.program, "view")
-        glUniformMatrix4fv(loc_view, 1, GL_TRUE, mat_view)
+        self.__send_matrix_to_gpu(mat_view, "view")
 
-        # cálculo da matriz projection e manda para a GPU
         mat_projection = matrix_projection(window_height, window_width, camera.fov, camera.near, camera.far)
-        loc_projection = glGetUniformLocation(self.program, "projection")
-        glUniformMatrix4fv(loc_projection, 1, GL_TRUE, mat_projection)
+        self.__send_matrix_to_gpu(mat_projection, "projection")
 
-        # renderizando a cada três vértices (triângulos)
-        cr = [0, 0.3, 0.3, 0.6, 0.6, 0.9]
-        cb = [0, 0, 0.3, 0.3, 0.6, 0.6]
+        # renderizando a cada três vértices (triângulos) aplicando texturas
         for i in range(0, len(self.vertexes['position']), 4):
             glBindTexture(GL_TEXTURE_2D, self.texture_id)
             glDrawArrays(GL_TRIANGLE_STRIP, i, 4)

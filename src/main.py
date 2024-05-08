@@ -4,7 +4,11 @@ import numpy as np
 
 from src.facade import WindowFacade, ProgramFacade
 from src.camera import Camera, CameraMovement
-from cube import Cube
+from src.texture import TextureId
+from src.util.loader import TextureLoader
+from src.util.path import PathHelper
+from src.object import Cube
+from camera import Camera
 
 window_width = 700
 window_height = 500
@@ -65,12 +69,16 @@ def main():
     window = WindowFacade.setup_window(window_width, window_height, "MineTest")
     program = ProgramFacade.setup_program()
 
-    # inicialização do objeto em cena
-    obj = Cube(program, [0.0, 0.0, 0.0])
-    obj.send_vertexes_to_gpu()
+    # TODO modularizar (criar entidade para carregar todas as texturas)
+    texture_filename = PathHelper.get_abs_path("src\\texture\\block\\grass\\Grass_Block_TEX.png")
+    TextureLoader.load_from_file(TextureId.GRASS_TEXTURE, texture_filename)
 
-    obj2 = Cube(program, [1.2, 0.4, 0.1])
-    obj2.send_vertexes_to_gpu()
+    # inicialização do objeto em cena
+    obj = Cube(program, [0.0, 0.0, 0.0], TextureId.GRASS_TEXTURE)
+    obj.send_data_to_gpu()
+
+    obj2 = Cube(program, [1.2, 0.4, 0.1], TextureId.GRASS_TEXTURE)
+    obj2.send_data_to_gpu()
 
     # ouve os eventos do teclado e mouse
     glfw.set_key_callback(window, key_event)
@@ -78,7 +86,6 @@ def main():
 
     # loop de renderização
     glfw.show_window(window)
-    glEnable(GL_DEPTH_TEST)  # importante para 3D!
 
     while not glfw.window_should_close(window):
         glfw.poll_events()

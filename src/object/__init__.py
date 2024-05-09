@@ -1,1 +1,1 @@
-from .cube import Cube
+from .game_object import GameObject

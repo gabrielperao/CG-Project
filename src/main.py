@@ -7,7 +7,7 @@ from src.camera import Camera, CameraMovement
 from src.texture import TextureId
 from src.util.loader import TextureLoader
 from src.util.path import PathHelper
-from src.object import Cube
+from src.object.block import GrassBlock
 from camera import Camera
 
 window_width = 700
@@ -70,15 +70,14 @@ def main():
     program = ProgramFacade.setup_program()
 
     # TODO modularizar (criar entidade para carregar todas as texturas)
-    texture_filename = PathHelper.get_abs_path("src\\texture\\block\\grass\\Grass_Block_TEX.png")
+    texture_filename = PathHelper.get_abs_path("src\\texture\\block\\grass\\grass_block_texture.png")
     TextureLoader.load_from_file(TextureId.GRASS_TEXTURE, texture_filename)
 
     # inicialização do objeto em cena
-    texture_obj_path = "src\\texture\\block\\grass\\Grass_Block.obj"
-    obj = Cube(program, [0.0, 0.0, 0.0], texture_obj_path, TextureId.GRASS_TEXTURE)
+    obj = GrassBlock(program, [0.0, 0.0, 0.0])
     obj.send_data_to_gpu()
 
-    obj2 = Cube(program, [1.2, 0.4, 0.1], texture_obj_path, TextureId.GRASS_TEXTURE)
+    obj2 = GrassBlock(program, [1.2, 0.4, 0.1])
     obj2.send_data_to_gpu()
 
     # ouve os eventos do teclado e mouse

@@ -70,15 +70,16 @@ def main():
     program = ProgramFacade.setup_program()
 
     # TODO modularizar (criar entidade para carregar todas as texturas)
-    texture_filename = PathHelper.get_abs_path("src\\texture\\block\\grass_block_texture.png")
-    TextureLoader.load_from_file(TextureId.GRASS_TEXTURE, texture_filename)
+    texture_grass = PathHelper.get_abs_path("src\\texture\\block\\grass_block_texture.png")
+    TextureLoader.load_from_file(TextureId.GRASS_TEXTURE, texture_grass)
+    texture_stone = PathHelper.get_abs_path("src\\texture\\block\\stone_block_texture.png")
+    TextureLoader.load_from_file(TextureId.GRASS_TEXTURE, texture_stone)
 
     # inicialização do chunk
     chunk = Chunk(0, 0)
     chunk.put_object((1, 0, 1), ObjectId.GRASS)
     chunk.put_object((0, 0, 0), ObjectId.GRASS)
-    chunk.put_object((0, 1, 0), ObjectId.GRASS)
-    chunk.remove_object((0, 1, 0))
+    chunk.put_object((0, 1, 0), ObjectId.STONE)
     chunk.put_object((0, 0, 1), ObjectId.GRASS)
     chunk.build(program)
 

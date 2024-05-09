@@ -7,8 +7,11 @@ from src.camera import Camera, CameraMovement
 from src.texture import TextureId
 from src.util.loader import TextureLoader
 from src.util.path import PathHelper
-from src.object.block import GrassBlock
 from camera import Camera
+
+# from src.object.block import GrassBlock
+from src.object.object_id import ObjectId
+from chunk import Chunk
 
 window_width = 700
 window_height = 500
@@ -70,15 +73,17 @@ def main():
     program = ProgramFacade.setup_program()
 
     # TODO modularizar (criar entidade para carregar todas as texturas)
-    texture_filename = PathHelper.get_abs_path("src\\texture\\block\\grass\\grass_block_texture.png")
+    texture_filename = PathHelper.get_abs_path("src\\texture\\block\\grass_block_texture.png")
     TextureLoader.load_from_file(TextureId.GRASS_TEXTURE, texture_filename)
 
-    # inicialização do objeto em cena
-    obj = GrassBlock(program, [0.0, 0.0, 0.0])
-    obj.send_data_to_gpu()
-
-    obj2 = GrassBlock(program, [1.2, 0.4, 0.1])
-    obj2.send_data_to_gpu()
+    # inicialização do chunk
+    chunk = Chunk(0, 0)
+    chunk.put_object((1, 0, 1), ObjectId.GRASS)
+    chunk.put_object((0, 0, 0), ObjectId.GRASS)
+    chunk.put_object((0, 1, 0), ObjectId.GRASS)
+    chunk.remove_object((0, 1, 0))
+    chunk.put_object((0, 0, 1), ObjectId.GRASS)
+    chunk.build(program)
 
     # ouve os eventos do teclado e mouse
     glfw.set_key_callback(window, key_event)
@@ -100,9 +105,8 @@ def main():
         else:
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
-        # renderização e atualização do objeto
-        obj.render(window_height, window_width, camera)
-        obj2.render(window_height, window_width, camera)
+        # renderização e atualização do chunk
+        chunk.render(window_height, window_width, camera)
         camera.update_position()
 
         glfw.swap_buffers(window)

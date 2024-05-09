@@ -11,7 +11,7 @@ class Camera:
 
         self.movement = CameraMovement.STOP
         self.vertical_angle = 0
-        self.horizontal_angle = 0
+        self.horizontal_angle = np.pi
 
         self.sensibility = sensibility
         self.fov = fov

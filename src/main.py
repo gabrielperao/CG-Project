@@ -64,9 +64,6 @@ def cursor_event(window, x_pos, y_pos):
     camera.vertical_angle -= camera.sensibility * camera.fov * dy_pos / window_height
     camera.vertical_angle = np.clip(camera.vertical_angle, -np.pi / 2 + angle_precision, np.pi / 2 - angle_precision)
 
-    # converte para coordenadas esféricas
-    camera.update_angle_view()
-
 
 def main():
     window = WindowFacade.setup_window(window_width, window_height, "MineTest")
@@ -105,9 +102,12 @@ def main():
         else:
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
-        # renderização e atualização do chunk
+        # renderização do chunk
         chunk.render(window_height, window_width, camera)
+
+        # atualização da câmera
         camera.update_position()
+        camera.update_angle_view()
 
         glfw.swap_buffers(window)
 

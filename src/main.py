@@ -4,9 +4,7 @@ import numpy as np
 
 from src.facade import WindowFacade, ProgramFacade
 from src.camera import Camera, CameraMovement
-from src.texture import TextureId
 from src.util.loader import TextureLoader
-from src.util.path import PathHelper
 from camera import Camera
 
 from src.object.object_id import ObjectId
@@ -68,11 +66,8 @@ def main():
     window = WindowFacade.setup_window(window_width, window_height, "MineTest")
     program = ProgramFacade.setup_program()
 
-    # TODO modularizar (criar entidade para carregar todas as texturas)
-    texture_grass_filename = PathHelper.get_abs_path("src\\texture\\block\\grass_block_texture.png")
-    TextureLoader.load_from_file(TextureId.GRASS_TEXTURE, texture_grass_filename)
-    texture_stone_filename = PathHelper.get_abs_path("src\\texture\\block\\stone_block_texture.png")
-    TextureLoader.load_from_file(TextureId.STONE_TEXTURE, texture_stone_filename)
+    TextureLoader.load_all_block_textures()
+    # TextureLoader.load_all_misc_textures()  TODO: adicionar texturas misc (galinha, tocha, flor)
 
     # inicialização do chunk
     chunk = Chunk(0, 0)

@@ -9,7 +9,6 @@ from src.util.loader import TextureLoader
 from src.util.path import PathHelper
 from camera import Camera
 
-# from src.object.block import GrassBlock
 from src.object.object_id import ObjectId
 from chunk import Chunk
 
@@ -70,10 +69,10 @@ def main():
     program = ProgramFacade.setup_program()
 
     # TODO modularizar (criar entidade para carregar todas as texturas)
-    texture_grass = PathHelper.get_abs_path("src\\texture\\block\\grass_block_texture.png")
-    TextureLoader.load_from_file(TextureId.GRASS_TEXTURE, texture_grass)
-    texture_stone = PathHelper.get_abs_path("src\\texture\\block\\stone_block_texture.png")
-    TextureLoader.load_from_file(TextureId.GRASS_TEXTURE, texture_stone)
+    texture_grass_filename = PathHelper.get_abs_path("src\\texture\\block\\grass_block_texture.png")
+    TextureLoader.load_from_file(TextureId.GRASS_TEXTURE, texture_grass_filename)
+    texture_stone_filename = PathHelper.get_abs_path("src\\texture\\block\\stone_block_texture.png")
+    TextureLoader.load_from_file(TextureId.STONE_TEXTURE, texture_stone_filename)
 
     # inicialização do chunk
     chunk = Chunk(0, 0)

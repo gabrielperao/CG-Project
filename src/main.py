@@ -3,12 +3,13 @@ import glfw
 import numpy as np
 
 from src.facade import WindowFacade, ProgramFacade
-from src.camera import Camera, CameraMovement
+from src.camera import CameraMovement
 from src.util.loader import TextureLoader
+from src.manager import GPUDataManager
 from camera import Camera
 
 from src.object.object_id import ObjectId
-from chunk import Chunk
+from src.chunk import Chunk
 
 window_width = 700
 window_height = 400
@@ -16,7 +17,7 @@ window_height = 400
 old_x_pos = 0
 old_y_pos = 0
 
-camera = Camera(sensibility=0.15, step=0.003, fov=45.0, near=0.01, far=1000.0)
+camera = Camera(sensibility=0.15, step=0.03, fov=45.0, near=0.01, far=1000.0)
 render_polygons = False
 movement_camera = True
 
@@ -77,12 +78,33 @@ def main():
     TextureLoader.load_all_block_textures()
     # TextureLoader.load_all_misc_textures()  TODO: adicionar texturas misc (galinha, tocha, flor)
 
+    gpu_manager = GPUDataManager(program)
+    gpu_manager.configure()
+
     # inicialização do chunk
-    chunk = Chunk(0, 0)
-    chunk.put_object((1, 0, 1), ObjectId.GRASS)
-    chunk.put_object((0, 0, 0), ObjectId.GRASS)
-    chunk.put_object((0, 1, 0), ObjectId.STONE)
-    chunk.put_object((0, 0, 1), ObjectId.GRASS)
+    max_gpu_data_array_index = gpu_manager.get_data_array_len()
+    chunk = Chunk(0, 0, max_gpu_data_array_index)
+    chunk.put_object((0, 0, 0), ObjectId.DIRT)
+    chunk.put_object((1, 0, 0), ObjectId.DIRT)
+    chunk.put_object((2, 0, 0), ObjectId.DIRT)
+    chunk.put_object((0, 0, 1), ObjectId.DIRT)
+    chunk.put_object((1, 0, 1), ObjectId.DIRT)
+    chunk.put_object((2, 0, 1), ObjectId.DIRT)
+    chunk.put_object((0, 1, 0), ObjectId.GRASS)
+    chunk.put_object((1, 1, 0), ObjectId.GRASS)
+    chunk.put_object((2, 1, 0), ObjectId.GRASS)
+    chunk.put_object((0, 1, 1), ObjectId.GRASS)
+    chunk.put_object((1, 1, 1), ObjectId.GRASS)
+    chunk.put_object((2, 1, 1), ObjectId.GRASS)
+    chunk.put_object((0, 2, 1), ObjectId.STONE)
+    chunk.put_object((1, 2, 1), ObjectId.STONE)
+    chunk.put_object((2, 2, 1), ObjectId.STONE)
+    chunk.put_object((0, 3, 1), ObjectId.COBBLESTONE)
+    chunk.put_object((1, 3, 1), ObjectId.GLASS)
+    chunk.put_object((2, 3, 1), ObjectId.COBBLESTONE)
+    chunk.put_object((0, 2, 0), ObjectId.LEAF)
+    chunk.put_object((1, 2, 0), ObjectId.LEAF)
+    chunk.put_object((2, 2, 0), ObjectId.LEAF)
     chunk.build(program)
 
     # ouve os eventos do teclado e mouse

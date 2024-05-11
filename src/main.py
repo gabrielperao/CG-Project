@@ -11,16 +11,18 @@ from src.object.object_id import ObjectId
 from chunk import Chunk
 
 window_width = 700
-window_height = 500
+window_height = 400
+
 old_x_pos = 0
 old_y_pos = 0
 
-camera = Camera(sensibility=0.1, step=0.003, fov=45.0, near=0.01, far=1000.0)
+camera = Camera(sensibility=0.15, step=0.003, fov=45.0, near=0.01, far=1000.0)
 render_polygons = False
+movement_camera = True
 
 
 def key_event(window, key, scancode, action, mods):
-    global render_polygons
+    global render_polygons, movement_camera
 
     # tecla pressionada
     if action == glfw.PRESS:
@@ -40,6 +42,10 @@ def key_event(window, key, scancode, action, mods):
         # alterar o modo de visualização dos polígonos
         if key == 80:  # P
             render_polygons = False if render_polygons else True
+
+        # altera o modo de congelar o movimento da câmera
+        if key == 256:  # ESC
+            movement_camera = False if movement_camera else True
 
     # tecla liberada
     if action == glfw.RELEASE:
@@ -63,6 +69,8 @@ def cursor_event(window, x_pos, y_pos):
 
 
 def main():
+    global old_x_pos, old_y_pos
+
     window = WindowFacade.setup_window(window_width, window_height, "MineTest")
     program = ProgramFacade.setup_program()
 
@@ -103,6 +111,15 @@ def main():
         # atualização da câmera
         camera.update_position()
         camera.update_angle_view()
+
+        # retorna o cursor para o centro da tela e deixa-o invisível
+        if movement_camera:
+            old_x_pos = window_width // 2
+            old_y_pos = window_height // 2
+            glfw.set_cursor_pos(window, window_width // 2, window_height // 2)
+            glfw.set_input_mode(window, glfw.CURSOR, glfw.CURSOR_HIDDEN)
+        else:
+            glfw.set_input_mode(window, glfw.CURSOR, glfw.CURSOR_NORMAL)
 
         glfw.swap_buffers(window)
 

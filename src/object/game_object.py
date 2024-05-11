@@ -30,12 +30,12 @@ class GameObject:
         self.vertexes['position'] = self.vertexes_coords
 
     def send_data_to_gpu(self):
-        buffer = glGenBuffers(2)
-        self.__send_vertexes_to_gpu(buffer)
-        self.__send_texture_to_gpu(buffer)
+        self.__send_vertexes_to_gpu()
+        self.__send_texture_to_gpu()
 
-    def __send_vertexes_to_gpu(self, buffer):
-        glBindBuffer(GL_ARRAY_BUFFER, buffer[0])
+    def __send_vertexes_to_gpu(self):
+        buffer = glGenBuffers(1)
+        glBindBuffer(GL_ARRAY_BUFFER, buffer)
         glBufferData(GL_ARRAY_BUFFER, self.vertexes.nbytes, self.vertexes, GL_DYNAMIC_DRAW)
 
         stride = self.vertexes.strides[0]
@@ -45,8 +45,9 @@ class GameObject:
         glEnableVertexAttribArray(loc_vertexes)
         glVertexAttribPointer(loc_vertexes, 3, GL_FLOAT, False, stride, offset)
 
-    def __send_texture_to_gpu(self, buffer):
-        glBindBuffer(GL_ARRAY_BUFFER, buffer[1])
+    def __send_texture_to_gpu(self):
+        buffer = glGenBuffers(1)
+        glBindBuffer(GL_ARRAY_BUFFER, buffer)
         glBufferData(GL_ARRAY_BUFFER, self.texture.nbytes, self.texture, GL_DYNAMIC_DRAW)
 
         stride = self.texture.strides[0]

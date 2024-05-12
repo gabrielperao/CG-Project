@@ -99,6 +99,7 @@ def main():
     chunk.put_object((0, 2, 1), ObjectId.STONE)
     chunk.put_object((1, 2, 1), ObjectId.STONE)
     chunk.put_object((2, 2, 1), ObjectId.STONE)
+    chunk.put_object((4, 2, 4), ObjectId.WOOD)
     chunk.put_object((0, 3, 1), ObjectId.COBBLESTONE)
     chunk.put_object((1, 3, 1), ObjectId.GLASS)
     chunk.put_object((2, 3, 1), ObjectId.COBBLESTONE)

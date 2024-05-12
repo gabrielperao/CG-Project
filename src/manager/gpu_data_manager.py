@@ -42,7 +42,8 @@ class GPUDataManager:
             ObjectId.COBBLESTONE: PathHelper.get_abs_path("src\\model\\block\\simple_block.obj"),
             ObjectId.DIRT: PathHelper.get_abs_path("src\\model\\block\\simple_block.obj"),
             ObjectId.GLASS: PathHelper.get_abs_path("src\\model\\block\\simple_block.obj"),
-            ObjectId.LEAF: PathHelper.get_abs_path("src\\model\\block\\simple_block.obj")
+            ObjectId.LEAF: PathHelper.get_abs_path("src\\model\\block\\simple_block.obj"),
+            ObjectId.WOOD: PathHelper.get_abs_path("src\\model\\block\\wood_block.obj"),
         }
 
         for object_id in filenames.keys():

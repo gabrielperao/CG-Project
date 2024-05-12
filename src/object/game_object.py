@@ -17,22 +17,17 @@ class GameObject:
 
         self.texture_id = texture_id
 
+    def __calculate_gpu_matrix(self, gpu_var_name, matrix_function, *args):
+        matrix = matrix_function(*args)
+        loc = glGetUniformLocation(self.program, gpu_var_name)
+        glUniformMatrix4fv(loc, 1, GL_TRUE, matrix)
+
     def render(self, window_height, window_width, camera, scale: list = (1.0, 1.0, 1.0),
                rotate: list = (1.0, 0.0, 0.0), angle: float = 0.0):
-        # cálculo da matriz model e manda para a GPU
-        mat_model = matrix_model(coord=self.coord, scale=scale, rotate=rotate, angle=angle)
-        loc_model = glGetUniformLocation(self.program, "model")
-        glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
-
-        # cálculo da matriz view e manda para a GPU
-        mat_view = matrix_view(camera.position, camera.target, camera.up)
-        loc_view = glGetUniformLocation(self.program, "view")
-        glUniformMatrix4fv(loc_view, 1, GL_TRUE, mat_view)
-
-        # cálculo da matriz projection e manda para a GPU
-        mat_projection = matrix_projection(window_height, window_width, camera.fov, camera.near, camera.far)
-        loc_projection = glGetUniformLocation(self.program, "projection")
-        glUniformMatrix4fv(loc_projection, 1, GL_TRUE, mat_projection)
+        # cálculo das matrizes do objeto e envio para a GPU
+        self.__calculate_gpu_matrix("model", matrix_model, self.coord, scale, rotate, angle)
+        self.__calculate_gpu_matrix("view", matrix_view, camera.position, camera.target, camera.up)
+        self.__calculate_gpu_matrix("projection", matrix_projection, window_height, window_width, camera.fov, camera.near, camera.far)
 
         # renderizando a cada três vértices (triângulos)
         for i in range(self.initial_index_for_gpu_data_array, self.max_gpu_data_array_index, 4):

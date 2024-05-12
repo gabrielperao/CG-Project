@@ -60,7 +60,7 @@ class Chunk:
         elif object_code == ObjectId.COBBLESTONE:
             obj = CobblestoneBlock(program, coord, self.max_gpu_data_array_index)
         elif object_code == ObjectId.WOOD:
-            obj = WoodBlock(program, coord)
+            obj = WoodBlock(program, coord, self.max_gpu_data_array_index)
         elif object_code == ObjectId.LEAF:
             obj = LeafBlock(program, coord, self.max_gpu_data_array_index)
         elif object_code == ObjectId.GLASS:

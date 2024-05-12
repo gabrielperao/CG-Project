@@ -26,7 +26,7 @@ class Chunk:
         if not self.__is_valid_position(position):
             raise ValueError("Posição inválida")
         if self.map[position] != ObjectId.EMPTY:
-            raise ValueError("Posição já ocupada")
+            raise ValueError(f"Posição já ocupada: {position}, {self.map[position]}")
 
         self.map[position] = object_code
 

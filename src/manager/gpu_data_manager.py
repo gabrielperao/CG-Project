@@ -17,9 +17,13 @@ class GPUDataManager:
         self.vertexes = None
         self.texture = None
         self.initial_indexes = {}
+        self.size_indexes = {}
 
     def get_initial_index_for_object_id(self, object_id: ObjectId):
         return self.initial_indexes[object_id]
+
+    def get_size_index_for_object_id(self, object_id: ObjectId):
+        return self.size_indexes[object_id]
 
     def get_data_array_len(self) -> int:
         return len(self.vertexes_coords)
@@ -54,6 +58,8 @@ class GPUDataManager:
                     self.add_vertex_coord(model['vertices'][vertex_id - 1])
                 for texture_id in face[1]:
                     self.add_texture_coord(model['texture'][texture_id - 1])
+
+            self.size_indexes[object_id] = self.get_data_array_len() - self.initial_indexes[object_id]
 
     def __setup_vertexes_and_texture(self):
         self.vertexes = np.zeros(len(self.vertexes_coords), [("position", np.float32, 3)])

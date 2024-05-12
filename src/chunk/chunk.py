@@ -5,12 +5,12 @@ from src.object.block import *
 
 
 class Chunk:
-    def __init__(self, index_x, index_z, max_gpu_data_array_index):
+    def __init__(self, index_x, index_z, gpu_manager):
         self.SIZE = (16, 64, 16)
         self.OBJ_SIZE = 1  # depende do arquivo ".obj"
         self.index_x = index_x
         self.index_z = index_z
-        self.max_gpu_data_array_index = max_gpu_data_array_index
+        self.gpu_manager = gpu_manager
 
         self.map = np.zeros(self.SIZE, dtype=int)
         self.objects = []
@@ -52,19 +52,19 @@ class Chunk:
     def __build_object(self, program, object_code, coord):
         obj = None
         if object_code == ObjectId.GRASS:
-            obj = GrassBlock(program, coord, self.max_gpu_data_array_index)
+            obj = GrassBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.GRASS))
         elif object_code == ObjectId.DIRT:
-            obj = DirtBlock(program, coord, self.max_gpu_data_array_index)
+            obj = DirtBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.DIRT))
         elif object_code == ObjectId.STONE:
-            obj = StoneBlock(program, coord, self.max_gpu_data_array_index)
+            obj = StoneBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.STONE))
         elif object_code == ObjectId.COBBLESTONE:
-            obj = CobblestoneBlock(program, coord, self.max_gpu_data_array_index)
+            obj = CobblestoneBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.COBBLESTONE))
         elif object_code == ObjectId.WOOD:
-            obj = WoodBlock(program, coord, self.max_gpu_data_array_index)
+            obj = WoodBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.WOOD))
         elif object_code == ObjectId.LEAF:
-            obj = LeafBlock(program, coord, self.max_gpu_data_array_index)
+            obj = LeafBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.LEAF))
         elif object_code == ObjectId.GLASS:
-            obj = GlassBlock(program, coord, self.max_gpu_data_array_index)
+            obj = GlassBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.GLASS))
         else:
             raise ValueError("Código de objeto não encontrado")
 
@@ -79,4 +79,4 @@ class Chunk:
 
     def render(self, window_height, window_width, camera):
         for obj in self.objects:
-            obj.render(window_height, window_width, camera)
+            obj.render(window_height, window_width, camera, faces=[True]*6)

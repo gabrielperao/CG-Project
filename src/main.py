@@ -82,8 +82,7 @@ def main():
     gpu_manager.configure()
 
     # inicialização do chunk
-    max_gpu_data_array_index = gpu_manager.get_data_array_len()
-    chunk = Chunk(0, 0, max_gpu_data_array_index)
+    chunk = Chunk(0, 0, gpu_manager)
     chunk.put_object((0, 0, 0), ObjectId.DIRT)
     chunk.put_object((1, 0, 0), ObjectId.DIRT)
     chunk.put_object((2, 0, 0), ObjectId.DIRT)

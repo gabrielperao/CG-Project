@@ -2,7 +2,7 @@ from OpenGL.GL import *
 from PIL import Image
 
 from src.texture import TextureId
-from src.util.path import PathHelper
+from src.util.helper import PathHelper
 
 
 class TextureLoader:

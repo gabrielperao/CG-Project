@@ -1,6 +1,6 @@
 from OpenGL.GL import *
 
-from src.matrixes import matrix_model, matrix_view, matrix_projection
+from src.util.helper import MatrixHelper
 
 
 class GameObject:
@@ -25,9 +25,10 @@ class GameObject:
     def render(self, window_height, window_width, camera, scale: list = (1.0, 1.0, 1.0),
                rotate: list = (1.0, 0.0, 0.0), angle: float = 0.0, faces: list = (True, True) * 3):
         # cálculo das matrizes do objeto e envio para a GPU
-        self.__calculate_gpu_matrix("model", matrix_model, self.coord, scale, rotate, angle)
-        self.__calculate_gpu_matrix("view", matrix_view, camera.position, camera.target, camera.up)
-        self.__calculate_gpu_matrix("projection", matrix_projection, window_height, window_width, camera.fov, camera.near, camera.far)
+        self.__calculate_gpu_matrix("model", MatrixHelper.matrix_model, self.coord, scale, rotate, angle)
+        self.__calculate_gpu_matrix("view", MatrixHelper.matrix_view, camera.position, camera.target, camera.up)
+        self.__calculate_gpu_matrix("projection", MatrixHelper.matrix_projection, window_height, window_width,
+                                    camera.fov, camera.near, camera.far)
 
         # renderizando a cada três vértices (triângulos) das faces desejadas
         for i in range(self.initial_index_for_gpu_data_array, self.max_gpu_data_array_index, 4):

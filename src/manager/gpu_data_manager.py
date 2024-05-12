@@ -1,7 +1,7 @@
 from OpenGL.GL import *
 import numpy as np
 
-from src.util.path import PathHelper
+from src.util.helper import PathHelper
 from src.util.loader import ModelLoader
 from src.util import singleton
 from src.object import ObjectId

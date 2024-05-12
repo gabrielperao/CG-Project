@@ -64,7 +64,7 @@ class HouseBuilder:
         chunk.put_object((x + 4, y, z + 5), ObjectId.LEAF)
 
     @classmethod
-    def build_house(cls, chunk: Chunk, x, y, z) -> None:
+    def build(cls, chunk: Chunk, x, y, z) -> None:
         cls.__build_right_wall(chunk, x, y, z)
         cls.__build_left_wall(chunk, x, y, z)
         cls.__build_front_wall(chunk, x, y, z)

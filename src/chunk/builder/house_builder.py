@@ -63,6 +63,10 @@ class HouseBuilder:
         chunk.put_object((x + 3, y, z + 5), ObjectId.LEAF)
         chunk.put_object((x + 4, y, z + 5), ObjectId.LEAF)
 
+    @staticmethod
+    def __build_torches(chunk, x, y, z) -> None:
+        chunk.put_object((x + 1, y, z + 1), ObjectId.TORCH)
+
     @classmethod
     def build(cls, chunk: Chunk, x, y, z) -> None:
         cls.__build_right_wall(chunk, x, y, z)
@@ -74,3 +78,4 @@ class HouseBuilder:
         cls.__build_windows(chunk, x, y, z)
         cls.__build_door(chunk, x, y, z)
         cls.__build_garden(chunk, x, y, z)
+        cls.__build_torches(chunk, x, y, z)

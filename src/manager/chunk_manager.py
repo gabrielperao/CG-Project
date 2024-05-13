@@ -1,5 +1,5 @@
 from src.chunk import Chunk
-from src.chunk.builder import HouseBuilder, TreeBuilder
+from src.chunk.builder import HouseBuilder, TreeBuilder, GardenBuilder
 from src.object import ObjectId
 
 
@@ -18,4 +18,5 @@ class ChunkManager:
         base_chunk = cls.__generate_base_chunk(index_x, index_z, max_gpu_data_array_index)
         HouseBuilder.build(base_chunk, 1, 1, 1)
         TreeBuilder.build(base_chunk, 10, 1, 10)
+        GardenBuilder.build(base_chunk)
         return base_chunk

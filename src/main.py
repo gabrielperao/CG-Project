@@ -71,17 +71,19 @@ def cursor_event(window, x_pos, y_pos):
 def main():
     global old_x_pos, old_y_pos
 
+    # inicialização da janela e programa
     window = WindowFacade.setup_window(window_width, window_height, "MineTest")
     program = ProgramFacade.setup_program()
 
+    # carregamento das texturas
     TextureLoader.load_all_block_textures()
-    # TextureLoader.load_all_misc_textures()  TODO: adicionar texturas misc (galinha, tocha, flor)
+    TextureLoader.load_all_misc_textures()
 
+    # envio de dados apara gpu
     gpu_manager = GPUDataManager(program)
     gpu_manager.configure()
 
     # inicialização do chunk
-    max_gpu_data_array_index = gpu_manager.get_data_array_len()
     chunk = ChunkManager.generate_chunk(0, 0, gpu_manager)
     chunk.build(program)
 

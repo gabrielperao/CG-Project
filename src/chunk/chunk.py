@@ -2,6 +2,7 @@ import numpy as np
 
 from src.object.object_id import ObjectId
 from src.object.block import *
+from src.object.misc import *
 
 
 class Chunk:
@@ -38,7 +39,7 @@ class Chunk:
 
         self.map[position] = ObjectId.EMPTY
 
-    def __calculate_object_coordinate(self, position):
+    def __calculate_object_coordinate(self, position, object_code):
         if not self.__is_valid_position(position):
             raise ValueError("Posição inválida")
 
@@ -46,7 +47,16 @@ class Chunk:
             self.index_x * self.SIZE[0] + position[0],
             position[1],
             self.index_z * self.SIZE[2] + position[2]
-        ])
+        ], dtype=float)
+
+        # centraliza a posição da tocha
+        if object_code == ObjectId.TORCH:
+            coordinate -= np.array([0.0625, 0.5, 0.0625])
+
+        # centraliza a posição da flor
+        if object_code == ObjectId.FLOWER:
+            coordinate -= np.array([0.13255, 0.5, 0.13255])
+
         return coordinate * self.OBJ_SIZE
 
     def __build_object(self, program, object_code, coord):
@@ -65,6 +75,10 @@ class Chunk:
             obj = LeafBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.LEAF))
         elif object_code == ObjectId.GLASS:
             obj = GlassBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.GLASS))
+        elif object_code == ObjectId.TORCH:
+            obj = Torch(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.TORCH))
+        elif object_code == ObjectId.FLOWER:
+            obj = Flower(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.FLOWER))
         else:
             raise ValueError("Código de objeto não encontrado")
 
@@ -73,7 +87,7 @@ class Chunk:
     def build(self, program):
         for index, object_code in np.ndenumerate(self.map):
             if object_code != ObjectId.EMPTY:
-                coord = self.__calculate_object_coordinate(index)
+                coord = self.__calculate_object_coordinate(index, object_code)
                 obj = self.__build_object(program, object_code, coord)
                 self.objects.append(obj)
 

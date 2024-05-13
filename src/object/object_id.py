@@ -10,6 +10,8 @@ class ObjectId(int, Enum):
     WOOD = 5
     LEAF = 6
     GLASS = 7
+    TORCH = 8
+    FLOWER = 9
 
     def __int__(self):
         return self.value

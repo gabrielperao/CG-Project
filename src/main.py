@@ -15,7 +15,7 @@ window_height = 400
 old_x_pos = 0
 old_y_pos = 0
 
-camera = Camera(sensibility=0.15, step=0.2, fov=45.0, near=0.01, far=1000.0)
+camera = Camera(sensibility=0.15, step=0.3, fov=45.0, near=0.01, far=1000.0)
 render_polygons = False
 movement_camera = True
 

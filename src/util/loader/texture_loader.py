@@ -18,7 +18,7 @@ class TextureLoader:
     }
 
     MISC_TEXTURE_FILENAMES = {
-        # TextureId.CHICKEN_TEXTURE: "chicken_misc_texture.png",
+        TextureId.SLIME_TEXTURE: "slime_misc_texture.png",
         TextureId.TORCH_TEXTURE: "torch_misc_texture.png",
         TextureId.FLOWER_TEXTURE: "flower_misc_texture.png"
     }

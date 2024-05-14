@@ -50,6 +50,7 @@ class GPUDataManager:
             ObjectId.WOOD: PathHelper.get_abs_path("src\\model\\block\\wood_block.obj"),
             ObjectId.TORCH: PathHelper.get_abs_path("src\\model\\misc\\torch.obj"),
             ObjectId.FLOWER: PathHelper.get_abs_path("src\\model\\misc\\flower.obj"),
+            ObjectId.SLIME: PathHelper.get_abs_path("src\\model\\block\\simple_block.obj"),
         }
 
         for object_id in filenames.keys():

@@ -1,13 +1,12 @@
+import numpy as np
 from OpenGL.GL import *
 import glfw
-import numpy as np
 
 from src.facade import WindowFacade, ProgramFacade
 from src.camera import CameraMovement
+from src.camera import Camera
 from src.util.loader import TextureLoader
 from src.manager import GPUDataManager
-from camera import Camera
-
 from src.manager import ChunkManager
 
 window_width = 700
@@ -94,6 +93,7 @@ def main():
     # loop de renderização
     glfw.show_window(window)
 
+    count = 0
     while not glfw.window_should_close(window):
         glfw.poll_events()
 
@@ -107,8 +107,9 @@ def main():
         else:
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
-        # renderização do chunk
+        # renderização e atualização do chunk
         chunk.render(window_height, window_width, camera)
+        chunk.update_entities(count)
 
         # atualização da câmera
         camera.update_position()
@@ -124,6 +125,7 @@ def main():
             glfw.set_input_mode(window, glfw.CURSOR, glfw.CURSOR_NORMAL)
 
         glfw.swap_buffers(window)
+        count = (count + 1) % 30
 
     glfw.terminate()
 

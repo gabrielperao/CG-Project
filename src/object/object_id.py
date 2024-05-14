@@ -12,6 +12,7 @@ class ObjectId(int, Enum):
     GLASS = 7
     TORCH = 8
     FLOWER = 9
+    SLIME = 10
 
     def __int__(self):
         return self.value

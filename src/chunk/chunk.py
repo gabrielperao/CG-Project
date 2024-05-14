@@ -79,6 +79,8 @@ class Chunk:
             obj = Torch(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.TORCH))
         elif object_code == ObjectId.FLOWER:
             obj = Flower(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.FLOWER))
+        elif object_code == ObjectId.SLIME:
+            obj = Slime(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.SLIME))
         else:
             raise ValueError("Código de objeto não encontrado")
 
@@ -93,4 +95,12 @@ class Chunk:
 
     def render(self, window_height, window_width, camera):
         for obj in self.objects:
-            obj.render(window_height, window_width, camera, faces=[True]*6)
+            if hasattr(obj, 'dynamic_render'):
+                obj.dynamic_render(window_height, window_width, camera)
+            else:
+                obj.render(window_height, window_width, camera, faces=[True]*6)
+
+    def update_entities(self, time):
+        for obj in self.objects:
+            if hasattr(obj, 'update'):
+                obj.update(time)

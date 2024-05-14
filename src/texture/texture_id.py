@@ -9,7 +9,7 @@ class TextureId(int, Enum):
     GLASS_TEXTURE = 4
     WOOD_TEXTURE = 5
     LEAF_TEXTURE = 6
-    CHICKEN_TEXTURE = 7
+    SLIME_TEXTURE = 7
     TORCH_TEXTURE = 8
     FLOWER_TEXTURE = 9
 

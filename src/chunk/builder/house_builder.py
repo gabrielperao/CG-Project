@@ -57,7 +57,6 @@ class HouseBuilder:
 
     @staticmethod
     def __build_garden(chunk, x, y, z) -> None:
-        # TODO: substituir por flores?
         chunk.put_object((x, y, z + 5), ObjectId.LEAF)
         chunk.put_object((x + 1, y, z + 5), ObjectId.LEAF)
         chunk.put_object((x + 3, y, z + 5), ObjectId.LEAF)
@@ -66,6 +65,11 @@ class HouseBuilder:
     @staticmethod
     def __build_torches(chunk, x, y, z) -> None:
         chunk.put_object((x + 1, y, z + 1), ObjectId.TORCH)
+
+    @staticmethod
+    def __build_bench(chunk, x, y, z) -> None:
+        chunk.put_object((x + 3, y, z + 1), ObjectId.COBBLESTONE)
+        chunk.put_object((x + 3, y + 1, z + 1), ObjectId.FLOWER)
 
     @classmethod
     def build(cls, chunk: Chunk, x, y, z) -> None:
@@ -79,3 +83,4 @@ class HouseBuilder:
         cls.__build_door(chunk, x, y, z)
         cls.__build_garden(chunk, x, y, z)
         cls.__build_torches(chunk, x, y, z)
+        cls.__build_bench(chunk, x, y, z)

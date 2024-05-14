@@ -27,6 +27,9 @@ class ProgramFacade:
         
                 void main(){
                     vec4 texture = texture2D(samplerTexture, out_texture);
+                    if (texture.a < 0.3f) {
+                        discard;
+                    }
                     gl_FragColor = texture;
                 }
         """)

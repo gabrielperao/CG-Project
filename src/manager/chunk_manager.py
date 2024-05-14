@@ -19,4 +19,5 @@ class ChunkManager:
         HouseBuilder.build(base_chunk, 1, 1, 1)
         TreeBuilder.build(base_chunk, 10, 1, 10)
         GardenBuilder.build(base_chunk)
+        base_chunk.put_object((1, 1, 11), ObjectId.SLIME)
         return base_chunk

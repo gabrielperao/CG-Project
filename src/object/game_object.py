@@ -24,6 +24,9 @@ class GameObject:
         loc = glGetUniformLocation(self.program, gpu_var_name)
         glUniformMatrix4fv(loc, 1, GL_TRUE, matrix)
 
+    def update_coord(self, new_coord: list):
+        self.coord = new_coord
+
     def render(self, window_height, window_width, camera, scale: list = (1.0, 1.0, 1.0),
                rotate: list = (1.0, 0.0, 0.0), angle: float = 0.0, faces: list = (True, True) * 3):
         # cálculo das matrizes do objeto e envio para a GPU

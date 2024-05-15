@@ -3,8 +3,6 @@ import numpy as np
 from src.object.object_id import ObjectId
 from src.object.block import *
 from src.object.misc import *
-from src.object.misc.sky_box import SkyBox  # TODO: remove
-
 
 class Chunk:
     SIZE = (16, 64, 16)
@@ -83,9 +81,6 @@ class Chunk:
             obj = Flower(program, index, coord)
         elif object_code == ObjectId.SLIME:
             obj = Slime(program, coord)
-        elif object_code == ObjectId.SKYBOX:
-            # TODO: remove
-            obj = SkyBox(program, index, coord)
         else:
             raise ValueError("Código de objeto não encontrado")
 

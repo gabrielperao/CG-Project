@@ -29,5 +29,4 @@ class ChunkManager:
         TreeBuilder.build(base_chunk, 10, 1, 10)
         GardenBuilder.build(base_chunk, 0, 1, 0)
         base_chunk.put_object((1, 1, 11), ObjectId.SLIME)
-        base_chunk.put_object((3, 3, 12), ObjectId.SKYBOX)
         return base_chunk

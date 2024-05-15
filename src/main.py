@@ -8,6 +8,7 @@ from src.camera import Camera
 from src.util.loader import TextureLoader
 from src.manager import GPUDataManager
 from src.manager import ChunkManager
+from src.object.misc import SkyBox
 
 window_width = 700
 window_height = 400
@@ -15,7 +16,7 @@ window_height = 400
 old_x_pos = 0
 old_y_pos = 0
 
-camera = Camera(sensibility=0.15, step=0.3, fov=45.0, near=0.01, far=1000.0)
+camera = Camera(sensibility=0.15, step=0.5, fov=45.0, near=0.01, far=1000.0)
 render_polygons = False
 movement_camera = True
 movement_entities = True
@@ -91,6 +92,9 @@ def main():
     chunk = ChunkManager.generate_chunk(0, 0)
     chunk.build(program)
 
+    # inicialização do Skybox
+    skybox = SkyBox(program, camera.position)
+
     # ouve os eventos do teclado e mouse
     glfw.set_key_callback(window, key_event)
     glfw.set_cursor_pos_callback(window, cursor_event)
@@ -111,6 +115,9 @@ def main():
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         else:
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+
+        # renderização e atualização do skybox
+        skybox.dynamic_render(window_height, window_width, camera)
 
         # renderização e atualização do chunk
         chunk.render(window_height, window_width, camera)

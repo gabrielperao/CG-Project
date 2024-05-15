@@ -4,8 +4,10 @@ from src.util.helper import MatrixHelper
 
 
 class GameObject:
-    def __init__(self, program, coord: list, texture_id,
+    def __init__(self, program, coord: list, texture_id, index_in_chunk: tuple,
                  initial_index_for_gpu_data_array: int, gpu_data_array_size: int):
+        self.index_in_chunk = index_in_chunk
+
         self.program = program
         self.coord = coord
         self.initial_index_for_gpu_data_array = initial_index_for_gpu_data_array

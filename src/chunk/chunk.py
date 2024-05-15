@@ -6,9 +6,10 @@ from src.object.misc import *
 
 
 class Chunk:
+    SIZE = (16, 64, 16)
+    OBJ_SIZE = 1  # depende do arquivo ".obj"
+
     def __init__(self, index_x, index_z, gpu_manager):
-        self.SIZE = (16, 64, 16)
-        self.OBJ_SIZE = 1  # depende do arquivo ".obj"
         self.index_x = index_x
         self.index_z = index_z
         self.gpu_manager = gpu_manager
@@ -59,26 +60,26 @@ class Chunk:
 
         return coordinate * self.OBJ_SIZE
 
-    def __build_object(self, program, object_code, coord):
+    def __build_object(self, program, object_code, index, coord):
         obj = None
         if object_code == ObjectId.GRASS:
-            obj = GrassBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.GRASS))
+            obj = GrassBlock(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.GRASS))
         elif object_code == ObjectId.DIRT:
-            obj = DirtBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.DIRT))
+            obj = DirtBlock(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.DIRT))
         elif object_code == ObjectId.STONE:
-            obj = StoneBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.STONE))
+            obj = StoneBlock(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.STONE))
         elif object_code == ObjectId.COBBLESTONE:
-            obj = CobblestoneBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.COBBLESTONE))
+            obj = CobblestoneBlock(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.COBBLESTONE))
         elif object_code == ObjectId.WOOD:
-            obj = WoodBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.WOOD))
+            obj = WoodBlock(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.WOOD))
         elif object_code == ObjectId.LEAF:
-            obj = LeafBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.LEAF))
+            obj = LeafBlock(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.LEAF))
         elif object_code == ObjectId.GLASS:
-            obj = GlassBlock(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.GLASS))
+            obj = GlassBlock(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.GLASS))
         elif object_code == ObjectId.TORCH:
-            obj = Torch(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.TORCH))
+            obj = Torch(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.TORCH))
         elif object_code == ObjectId.FLOWER:
-            obj = Flower(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.FLOWER))
+            obj = Flower(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.FLOWER))
         elif object_code == ObjectId.SLIME:
             obj = Slime(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.SLIME))
         else:
@@ -90,15 +91,36 @@ class Chunk:
         for index, object_code in np.ndenumerate(self.map):
             if object_code != ObjectId.EMPTY:
                 coord = self.__calculate_object_coordinate(index, object_code)
-                obj = self.__build_object(program, object_code, coord)
+                obj = self.__build_object(program, object_code, index, coord)
                 self.objects.append(obj)
+
+    def __has_block(self, position):
+        return (self.map[position] >= ObjectId.GRASS) and (self.map[position] <= ObjectId.WOOD)
+
+    def __has_block_neighbors(self, obj):
+        neighbors = [False] * 6  # orientação: -y, y, x, z, -x, -z
+        index = np.array(obj.index_in_chunk)
+
+        for i, increment in enumerate([[0, -1, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], [-1, 0, 0], [0, 0, -1]]):
+            current_position = tuple(index + increment)
+            if self.__is_valid_position(current_position) and self.__has_block(current_position):
+                neighbors[i] = True
+
+        return neighbors
+
+    def __render_obj_faces_optimizer(self, obj, window_height, window_width, camera):
+        faces = [True] * 6
+        if isinstance(obj, Block):
+            faces = [not i for i in self.__has_block_neighbors(obj)]
+
+        obj.render(window_height, window_width, camera, faces=faces)
 
     def render(self, window_height, window_width, camera):
         for obj in self.objects:
             if hasattr(obj, 'dynamic_render'):
                 obj.dynamic_render(window_height, window_width, camera)
             else:
-                obj.render(window_height, window_width, camera, faces=[True]*6)
+                self.__render_obj_faces_optimizer(obj, window_height, window_width, camera)
 
     def update_entities(self, time):
         for obj in self.objects:

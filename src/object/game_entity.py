@@ -9,7 +9,7 @@ class GameEntity(GameObject):
         self.scale = np.array(scale)
         self.rotate = rotate
         self.angle = angle
-        super().__init__(program, coord, texture_id, initial_index_for_gpu_data_array, gpu_data_array_size)
+        super().__init__(program, coord, texture_id, (0, 0, 0), initial_index_for_gpu_data_array, gpu_data_array_size)
 
     def update_position(self, velocity: list):
         self.coord += velocity

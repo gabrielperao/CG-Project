@@ -51,7 +51,7 @@ class GPUDataManager:
             ObjectId.TORCH: PathHelper.get_abs_path("src\\model\\misc\\torch.obj"),
             ObjectId.FLOWER: PathHelper.get_abs_path("src\\model\\misc\\flower.obj"),
             ObjectId.SLIME: PathHelper.get_abs_path("src\\model\\block\\simple_block.obj"),
-            ObjectId.SKYBOX: PathHelper.get_abs_path("src\\model\\block\\grass_block.obj")
+            ObjectId.SKYBOX: PathHelper.get_abs_path("src\\model\\misc\\skybox.obj")
         }
 
         for object_id in filenames.keys():

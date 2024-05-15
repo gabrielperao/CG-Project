@@ -1,3 +1,12 @@
+"""
+Projeto Computação Gráfica
+Universidade de São Paulo - Instituto de Ciências Matemáticas e de Computação
+2024
+
+Autoria de:
+    * Gabriel Barbosa de Amorim Perão
+    * Gabriel Natal Coutinho
+"""
 import numpy as np
 from OpenGL.GL import *
 import glfw
@@ -10,8 +19,8 @@ from src.manager import GPUDataManager
 from src.manager import ChunkManager
 from src.object.misc import SkyBox
 
-window_width = 700
-window_height = 400
+window_width = 2100
+window_height = 1200
 
 old_x_pos = 0
 old_y_pos = 0
@@ -77,7 +86,7 @@ def main():
     global old_x_pos, old_y_pos
 
     # inicialização da janela e programa
-    window = WindowFacade.setup_window(window_width, window_height, "MineTest")
+    window = WindowFacade.setup_window(window_width, window_height, "Projeto CG")
     program = ProgramFacade.setup_program()
 
     # carregamento das texturas

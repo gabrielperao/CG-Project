@@ -88,7 +88,7 @@ def main():
     gpu_manager.configure()
 
     # inicialização do chunk
-    chunk = ChunkManager.generate_chunk(0, 0, gpu_manager)
+    chunk = ChunkManager.generate_chunk(0, 0)
     chunk.build(program)
 
     # ouve os eventos do teclado e mouse

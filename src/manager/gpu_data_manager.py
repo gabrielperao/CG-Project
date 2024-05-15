@@ -25,13 +25,13 @@ class GPUDataManager:
     def get_size_index_for_object_id(self, object_id: ObjectId):
         return self.size_indexes[object_id]
 
-    def get_data_array_len(self) -> int:
+    def __get_data_array_len(self) -> int:
         return len(self.vertexes_coords)
 
-    def add_vertex_coord(self, coord):
+    def __add_vertex_coord(self, coord):
         self.vertexes_coords.append(coord)
 
-    def add_texture_coord(self, coord):
+    def __add_texture_coord(self, coord):
         self.texture_coords.append(coord)
 
     def configure(self):
@@ -51,18 +51,19 @@ class GPUDataManager:
             ObjectId.TORCH: PathHelper.get_abs_path("src\\model\\misc\\torch.obj"),
             ObjectId.FLOWER: PathHelper.get_abs_path("src\\model\\misc\\flower.obj"),
             ObjectId.SLIME: PathHelper.get_abs_path("src\\model\\block\\simple_block.obj"),
+            ObjectId.SKYBOX: PathHelper.get_abs_path("src\\model\\block\\grass_block.obj")
         }
 
         for object_id in filenames.keys():
             model = ModelLoader.load_from_file(filenames[object_id])
-            self.initial_indexes[object_id] = self.get_data_array_len()
+            self.initial_indexes[object_id] = self.__get_data_array_len()
             for face in model['faces']:
                 for vertex_id in face[0]:
-                    self.add_vertex_coord(model['vertices'][vertex_id - 1])
+                    self.__add_vertex_coord(model['vertices'][vertex_id - 1])
                 for texture_id in face[1]:
-                    self.add_texture_coord(model['texture'][texture_id - 1])
+                    self.__add_texture_coord(model['texture'][texture_id - 1])
 
-            self.size_indexes[object_id] = self.get_data_array_len() - self.initial_indexes[object_id]
+            self.size_indexes[object_id] = self.__get_data_array_len() - self.initial_indexes[object_id]
 
     def __setup_vertexes_and_texture(self):
         self.vertexes = np.zeros(len(self.vertexes_coords), [("position", np.float32, 3)])

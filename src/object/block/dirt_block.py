@@ -8,7 +8,7 @@ class DirtBlock(Block):
 
     TEXTURE_ID: TextureId = TextureId.DIRT_TEXTURE
 
-    def __init__(self, program, index_in_chunk, coord: list, max_gpu_data_array_index: int):
+    def __init__(self, program, index_in_chunk, coord: list):
         super().__init__(program, coord, self.TEXTURE_ID, index_in_chunk,
-                         GPUDataManager().get_initial_index_for_object_id(ObjectId.COBBLESTONE),
-                         max_gpu_data_array_index)
+                         GPUDataManager().get_initial_index_for_object_id(ObjectId.DIRT),
+                         GPUDataManager().get_size_index_for_object_id(ObjectId.DIRT))

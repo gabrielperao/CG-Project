@@ -3,16 +3,16 @@ import numpy as np
 from src.object.object_id import ObjectId
 from src.object.block import *
 from src.object.misc import *
+from src.object.misc.sky_box import SkyBox  # TODO: remove
 
 
 class Chunk:
     SIZE = (16, 64, 16)
     OBJ_SIZE = 1  # depende do arquivo ".obj"
 
-    def __init__(self, index_x, index_z, gpu_manager):
+    def __init__(self, index_x, index_z):
         self.index_x = index_x
         self.index_z = index_z
-        self.gpu_manager = gpu_manager
 
         self.map = np.zeros(self.SIZE, dtype=int)
         self.objects = []
@@ -60,28 +60,32 @@ class Chunk:
 
         return coordinate * self.OBJ_SIZE
 
-    def __build_object(self, program, object_code, index, coord):
+    @staticmethod
+    def __build_object(program, object_code, index, coord):
         obj = None
         if object_code == ObjectId.GRASS:
-            obj = GrassBlock(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.GRASS))
+            obj = GrassBlock(program, index, coord)
         elif object_code == ObjectId.DIRT:
-            obj = DirtBlock(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.DIRT))
+            obj = DirtBlock(program, index, coord)
         elif object_code == ObjectId.STONE:
-            obj = StoneBlock(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.STONE))
+            obj = StoneBlock(program, index, coord)
         elif object_code == ObjectId.COBBLESTONE:
-            obj = CobblestoneBlock(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.COBBLESTONE))
+            obj = CobblestoneBlock(program, index, coord)
         elif object_code == ObjectId.WOOD:
-            obj = WoodBlock(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.WOOD))
+            obj = WoodBlock(program, index, coord)
         elif object_code == ObjectId.LEAF:
-            obj = LeafBlock(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.LEAF))
+            obj = LeafBlock(program, index, coord)
         elif object_code == ObjectId.GLASS:
-            obj = GlassBlock(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.GLASS))
+            obj = GlassBlock(program, index, coord)
         elif object_code == ObjectId.TORCH:
-            obj = Torch(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.TORCH))
+            obj = Torch(program, index, coord)
         elif object_code == ObjectId.FLOWER:
-            obj = Flower(program, index, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.FLOWER))
+            obj = Flower(program, index, coord)
         elif object_code == ObjectId.SLIME:
-            obj = Slime(program, coord, self.gpu_manager.get_size_index_for_object_id(ObjectId.SLIME))
+            obj = Slime(program, coord)
+        elif object_code == ObjectId.SKYBOX:
+            # TODO: remove
+            obj = SkyBox(program, index, coord)
         else:
             raise ValueError("Código de objeto não encontrado")
 

@@ -12,6 +12,7 @@ class TextureId(int, Enum):
     SLIME_TEXTURE = 7
     TORCH_TEXTURE = 8
     FLOWER_TEXTURE = 9
+    SKYBOX_TEXTURE = 10
 
     def __int__(self):
         return self.value

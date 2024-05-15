@@ -8,7 +8,7 @@ class GrassBlock(Block):
 
     TEXTURE_ID: TextureId = TextureId.GRASS_TEXTURE
 
-    def __init__(self, program, index_in_chunk, coord: list, max_gpu_data_array_index: int):
+    def __init__(self, program, index_in_chunk, coord: list):
         super().__init__(program, coord, self.TEXTURE_ID, index_in_chunk,
                          GPUDataManager().get_initial_index_for_object_id(ObjectId.GRASS),
-                         max_gpu_data_array_index)
+                         GPUDataManager().get_size_index_for_object_id(ObjectId.GRASS))

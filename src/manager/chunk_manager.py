@@ -2,16 +2,25 @@ from src.chunk import Chunk
 from src.chunk.builder import HouseBuilder, TreeBuilder, GardenBuilder
 from src.object import ObjectId
 
+import random
+
 
 class ChunkManager:
 
     @staticmethod
     def __generate_base_chunk(index_x, index_z, max_gpu_data_array_index):
         chunk = Chunk(index_x, index_z, max_gpu_data_array_index)
-        for i in range(16):
-            for j in range(16):
+        scenary_size: int = 16
+        for i in range(scenary_size):
+            for j in range(scenary_size):
                 chunk.put_object((i, 0, j), ObjectId.DIRT)
                 chunk.put_object((i, 1, j), ObjectId.GRASS)
+        number_of_dirt_blocks_overrides: int = 10
+        for _ in range(number_of_dirt_blocks_overrides):
+            x = random.randint(0, scenary_size-1)
+            y = random.randint(0, scenary_size-1)
+            chunk.remove_object((x, 1, y))
+            chunk.put_object((x, 1, y), ObjectId.DIRT)
         return chunk
 
     @classmethod

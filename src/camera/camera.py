@@ -4,8 +4,10 @@ from .camera_movement import CameraMovement
 
 
 class Camera:
+    FLOOR_HEIGHT = 1
+
     def __init__(self, sensibility, step, fov, near, far):
-        self.position = glm.vec3(0.0, 0.0, 4.0)
+        self.position = glm.vec3(8.0, 4.0, 8.0)
         self.target = glm.vec3(0.0, 0.0, 0.0)
         self.up = glm.vec3(0.0, 1.0, 0.0)
 
@@ -41,6 +43,10 @@ class Camera:
         self.position.x += self.step * direction[0]
         self.position.y += self.step * direction[1]
         self.position.z += self.step * direction[2]
+
+        # não permite chegar debaixo da terra
+        if self.position.y < self.FLOOR_HEIGHT:
+            self.position.y = self.FLOOR_HEIGHT
 
     def __update_target(self, direction):
         self.target.x += self.step * direction[0]

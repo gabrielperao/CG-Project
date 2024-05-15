@@ -18,10 +18,11 @@ old_y_pos = 0
 camera = Camera(sensibility=0.15, step=0.3, fov=45.0, near=0.01, far=1000.0)
 render_polygons = False
 movement_camera = True
+movement_entities = True
 
 
 def key_event(window, key, scancode, action, mods):
-    global render_polygons, movement_camera
+    global render_polygons, movement_camera, movement_entities
 
     # tecla pressionada
     if action == glfw.PRESS:
@@ -45,6 +46,10 @@ def key_event(window, key, scancode, action, mods):
         # altera o modo de congelar o movimento da câmera
         if key == 256:  # ESC
             movement_camera = False if movement_camera else True
+
+        # ativa ou desativa o modo de movimento das entidades
+        if key == 77:  # M
+            movement_entities = False if movement_entities else True
 
     # tecla liberada
     if action == glfw.RELEASE:
@@ -109,7 +114,9 @@ def main():
 
         # renderização e atualização do chunk
         chunk.render(window_height, window_width, camera)
-        chunk.update_entities(count)
+        if movement_entities:
+            chunk.update_entities(count)
+            count = (count + 1) % 30
 
         # atualização da câmera
         camera.update_position()
@@ -125,7 +132,6 @@ def main():
             glfw.set_input_mode(window, glfw.CURSOR, glfw.CURSOR_NORMAL)
 
         glfw.swap_buffers(window)
-        count = (count + 1) % 30
 
     glfw.terminate()
 

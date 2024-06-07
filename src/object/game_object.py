@@ -1,5 +1,5 @@
 from OpenGL.GL import *
-
+from src.util.helper import GpuDataHelper
 from src.util.helper import MatrixHelper
 
 
@@ -26,6 +26,12 @@ class GameObject:
 
     def update_coord(self, new_coord: list):
         self.coord = new_coord
+
+    def set_surface_illumination_proprieties(self, ka, kd, ks, ns):
+        GpuDataHelper.send_var_to_gpu(self.program, ka, "ka")
+        GpuDataHelper.send_var_to_gpu(self.program, kd, "kd")
+        GpuDataHelper.send_var_to_gpu(self.program, ks, "ks")
+        GpuDataHelper.send_var_to_gpu(self.program, ns, "ns")
 
     def render(self, window_height, window_width, camera, scale: list = (1.0, 1.0, 1.0),
                rotate: list = (1.0, 0.0, 0.0), angle: float = 0.0, faces: list = (True, True) * 3):

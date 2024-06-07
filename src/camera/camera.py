@@ -1,6 +1,8 @@
+from OpenGL.GL import *
 import glm
 import numpy as np
 from .camera_movement import CameraMovement
+from src.util.helper import GpuDataHelper
 
 
 class Camera:
@@ -71,3 +73,7 @@ class Camera:
 
         self.__update_position(direction)
         self.__update_target(direction)
+
+    def send_position_gpu(self, program):
+        pos = list(self.position)
+        GpuDataHelper.send_array3_to_gpu(program, pos, "viewPos")

@@ -18,6 +18,7 @@ from src.util.loader import TextureLoader
 from src.manager import GPUDataManager
 from src.manager import ChunkManager
 from src.object.misc import SkyBox
+from src.util.helper import GpuDataHelper
 
 window_width = 2100
 window_height = 1200
@@ -104,6 +105,12 @@ def main():
     # inicialização do Skybox
     skybox = SkyBox(program, camera.position)
 
+    # TODO: permitir várias fontes de luz no cenário
+    # TODO: criar uma fonte de luz para cada tocha
+    # definição da fonte de luz
+    GpuDataHelper.send_array3_to_gpu(program, [9, 3, 9], "lightPos")
+    GpuDataHelper.send_var_to_gpu(program, 30, "dist_light")
+
     # ouve os eventos do teclado e mouse
     glfw.set_key_callback(window, key_event)
     glfw.set_cursor_pos_callback(window, cursor_event)
@@ -137,6 +144,7 @@ def main():
         # atualização da câmera
         camera.update_position()
         camera.update_angle_view()
+        camera.send_position_gpu(program)
 
         # retorna o cursor para o centro da tela e deixa-o invisível
         if movement_camera:

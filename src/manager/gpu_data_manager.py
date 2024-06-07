@@ -2,6 +2,7 @@ from OpenGL.GL import *
 import numpy as np
 
 from src.util.helper import PathHelper
+from src.util.helper import GpuDataHelper
 from src.util.loader import ModelLoader
 from src.util import singleton
 from src.object import ObjectId
@@ -12,10 +13,9 @@ class GPUDataManager:
 
     def __init__(self, program):
         self.program = program
-        self.texture_coords = []
-        self.vertexes_coords = []
-        self.vertexes = None
-        self.texture = None
+        self.texture = []
+        self.vertexes = []
+        self.normals = []
         self.initial_indexes = {}
         self.size_indexes = {}
 
@@ -26,18 +26,16 @@ class GPUDataManager:
         return self.size_indexes[object_id]
 
     def __get_data_array_len(self) -> int:
-        return len(self.vertexes_coords)
+        return len(self.vertexes)
 
     def __add_vertex_coord(self, coord):
-        self.vertexes_coords.append(coord)
+        self.vertexes.append(coord)
 
     def __add_texture_coord(self, coord):
-        self.texture_coords.append(coord)
+        self.texture.append(coord)
 
-    def configure(self):
-        self.__configure_coords()
-        self.__setup_vertexes_and_texture()
-        self.__send_data_to_gpu()
+    def __add_normal_coord(self, coord):
+        self.normals.append(coord)
 
     def __configure_coords(self):
         filenames = {
@@ -62,38 +60,26 @@ class GPUDataManager:
                     self.__add_vertex_coord(model['vertices'][vertex_id - 1])
                 for texture_id in face[1]:
                     self.__add_texture_coord(model['texture'][texture_id - 1])
+                for normal_id in face[2]:
+                    self.__add_normal_coord(model['normals'][normal_id - 1])
 
             self.size_indexes[object_id] = self.__get_data_array_len() - self.initial_indexes[object_id]
 
-    def __setup_vertexes_and_texture(self):
-        self.vertexes = np.zeros(len(self.vertexes_coords), [("position", np.float32, 3)])
-        self.vertexes['position'] = self.vertexes_coords
-        self.texture = np.zeros(len(self.texture_coords), [("position", np.float32, 2)])
-        self.texture['position'] = self.texture_coords
+    @staticmethod
+    def __setup_coords(array, dim):
+        modified_array = np.zeros(len(array), [("position", np.float32, dim)])
+        modified_array['position'] = array.copy()
+        return modified_array
 
     def __send_data_to_gpu(self):
-        buffer = glGenBuffers(2)
-        self.__send_vertexes_to_gpu(buffer)
-        self.__send_texture_to_gpu(buffer)
+        buffer = glGenBuffers(3)
+        GpuDataHelper.send_array_to_gpu(self.program, self.vertexes, buffer[0], 3, "position")
+        GpuDataHelper.send_array_to_gpu(self.program, self.texture, buffer[1], 2, "texture_coord")
+        GpuDataHelper.send_array_to_gpu(self.program, self.normals, buffer[2], 3, "normals")
 
-    def __send_vertexes_to_gpu(self, buffer):
-        glBindBuffer(GL_ARRAY_BUFFER, buffer[0])
-        glBufferData(GL_ARRAY_BUFFER, self.vertexes.nbytes, self.vertexes, GL_DYNAMIC_DRAW)
-
-        stride = self.vertexes.strides[0]
-        offset = ctypes.c_void_p(0)
-
-        loc_vertexes = glGetAttribLocation(self.program, "position")
-        glEnableVertexAttribArray(loc_vertexes)
-        glVertexAttribPointer(loc_vertexes, 3, GL_FLOAT, False, stride, offset)
-
-    def __send_texture_to_gpu(self, buffer):
-        glBindBuffer(GL_ARRAY_BUFFER, buffer[1])
-        glBufferData(GL_ARRAY_BUFFER, self.texture.nbytes, self.texture, GL_DYNAMIC_DRAW)
-
-        stride = self.texture.strides[0]
-        offset = ctypes.c_void_p(0)
-
-        loc_texture = glGetAttribLocation(self.program, "texture_coord")
-        glEnableVertexAttribArray(loc_texture)
-        glVertexAttribPointer(loc_texture, 2, GL_FLOAT, False, stride, offset)
+    def configure(self):
+        self.__configure_coords()
+        self.vertexes = self.__setup_coords(self.vertexes, 3)
+        self.texture = self.__setup_coords(self.texture, 2)
+        self.normals = self.__setup_coords(self.normals, 3)
+        self.__send_data_to_gpu()

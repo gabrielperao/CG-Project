@@ -4,11 +4,13 @@ from src.object.object_id import ObjectId
 from src.object.block import *
 from src.object.misc import *
 
+
 class Chunk:
     SIZE = (16, 64, 16)
     OBJ_SIZE = 1  # depende do arquivo ".obj"
 
-    def __init__(self, index_x, index_z):
+    def __init__(self, index_x, index_z, illumination):
+        self.illumination = illumination
         self.index_x = index_x
         self.index_z = index_z
 
@@ -59,7 +61,7 @@ class Chunk:
         return coordinate * self.OBJ_SIZE
 
     @staticmethod
-    def __build_object(program, object_code, index, coord):
+    def __build_object(program, object_code, index, coord, illumination):
         obj = None
         if object_code == ObjectId.GRASS:
             obj = GrassBlock(program, index, coord)
@@ -76,11 +78,11 @@ class Chunk:
         elif object_code == ObjectId.GLASS:
             obj = GlassBlock(program, index, coord)
         elif object_code == ObjectId.TORCH:
-            obj = Torch(program, index, coord)
+            obj = Torch(program, index, coord, illumination)
         elif object_code == ObjectId.FLOWER:
             obj = Flower(program, index, coord)
         elif object_code == ObjectId.SLIME:
-            obj = Slime(program, coord)
+            obj = Slime(program, coord, illumination)
         else:
             raise ValueError("Código de objeto não encontrado")
 
@@ -90,7 +92,7 @@ class Chunk:
         for index, object_code in np.ndenumerate(self.map):
             if object_code != ObjectId.EMPTY:
                 coord = self.__calculate_object_coordinate(index, object_code)
-                obj = self.__build_object(program, object_code, index, coord)
+                obj = self.__build_object(program, object_code, index, coord, self.illumination)
                 self.objects.append(obj)
 
     def __has_block(self, position):

@@ -8,6 +8,11 @@ class GpuDataHelper:
         glUniform1f(loc, var)
 
     @staticmethod
+    def send_integer_to_gpu(program, var, gpu_var_name):
+        loc = glGetUniformLocation(program, gpu_var_name)
+        glUniform1i(loc, var)
+
+    @staticmethod
     def send_array3_to_gpu(program, array, gpu_var_name):
         loc = glGetUniformLocation(program, gpu_var_name)
         glUniform3f(loc, array[0], array[1], array[2])

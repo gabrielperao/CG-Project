@@ -27,9 +27,15 @@ class ProgramFacade:
 
     # GLSL para Fragment Shader
     FRAGMENT_CODE: str = textwrap.dedent("""
-                // parâmetro com a cor da(s) fonte(s) de iluminação
-                uniform vec3 lightPos; // define coordenadas de posição da luz
-                vec3 lightColor = vec3(1.0, 1.0, 1.0);
+                // define a estrutura para as propriedades da luz
+                struct Light {
+                    vec3 position;
+                    vec3 color;
+                };
+                
+                // define um array uniforme para múltiplas fontes de luz
+                uniform int numLights; // número de fontes de luz
+                uniform Light lights[10]; // array de luzes, supondo no máximo 10 luzes
                 
                 // parâmetros da iluminação ambiente e difusa
                 uniform float ka; // coeficiente de reflexão ambiente
@@ -46,34 +52,35 @@ class ProgramFacade:
                 varying vec3 out_fragPos; // recebido do vertex shader
                 uniform sampler2D samplerTexture;
         
-                // ajustando kd e ks de acordo com a distância entre a luz e o objeto
+                // parâmetro para definir o quão longe a luz se propaga
                 uniform float dist_light;
-                float distance = length(lightPos - out_fragPos);
-                float new_kd = kd - distance / dist_light;
-                float new_ks = ks - distance / dist_light;
         
                 void main() {
-                    if (new_kd < 0.0f) {
-                        new_kd = 0.0f;
-                    }     
-                    if (new_ks < 0.0f) {
-                        new_ks = 0.0f;
-                    }
-                
-                    // calculando reflexão ambiente
-                    vec3 ambient = ka * lightColor;
-                
-                    // calculando reflexão difusa
-                    vec3 norm = normalize(out_normal); // normaliza vetores perpendiculares
-                    vec3 lightDir = normalize(lightPos - out_fragPos); // direção da luz
-                    float diff = max(dot(norm, lightDir), 0.0); // verifica limite angular (entre 0 e 90)
-                    vec3 diffuse = new_kd * diff * lightColor; // iluminação difusa
+                    vec3 ambient = vec3(0.0);
+                    vec3 diffuse = vec3(0.0);
+                    vec3 specular = vec3(0.0);
                     
-                    // calculando reflexão especular
+                    // calculando reflexão ambiente
+                    ambient += ka * vec3(1.0, 1.0, 1.0);
+                
+                    vec3 norm = normalize(out_normal); // normaliza vetores perpendiculares
                     vec3 viewDir = normalize(viewPos - out_fragPos); // direção do observador/camera
-                    vec3 reflectDir = normalize(reflect(-lightDir, norm)); // direção da reflexão
-                    float spec = pow(max(dot(viewDir, reflectDir), 0.0), ns);
-                    vec3 specular = new_ks * spec * lightColor;
+                    
+                    for (int i = 0; i < numLights; i ++) {
+                        float distance = length(lights[i].position - out_fragPos);
+                        float new_kd = max(kd - distance / dist_light, 0.0);
+                        float new_ks = max(ks - distance / dist_light, 0.0);
+                    
+                        // calculando reflexão difusa
+                        vec3 lightDir = normalize(lights[i].position - out_fragPos); // direção da luz
+                        float diff = max(dot(norm, lightDir), 0.0); // verifica limite angular (entre 0 e 90)
+                        diffuse += new_kd * diff * lights[i].color; // iluminação difusa
+                        
+                        // calculando reflexão especular
+                        vec3 reflectDir = normalize(reflect(-lightDir, norm)); // direção da reflexão
+                        float spec = pow(max(dot(viewDir, reflectDir), 0.0), ns);
+                        specular += new_ks * spec * lights[i].color;
+                    }
                     
                     // aplicando o modelo de iluminação
                     vec4 texture = texture2D(samplerTexture, out_texture);

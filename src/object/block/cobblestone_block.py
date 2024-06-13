@@ -8,7 +8,7 @@ class CobblestoneBlock(Block):
 
     TEXTURE_ID: TextureId = TextureId.COBBLESTONE_TEXTURE
 
-    def __init__(self, program, index_in_chunk, coord: list):
+    def __init__(self, program, index_in_chunk, coord: list, obj_ilum_parameters):
         super().__init__(program, coord, self.TEXTURE_ID, index_in_chunk,
                          GPUDataManager().get_initial_index_for_object_id(ObjectId.COBBLESTONE),
-                         GPUDataManager().get_size_index_for_object_id(ObjectId.COBBLESTONE))
+                         GPUDataManager().get_size_index_for_object_id(ObjectId.COBBLESTONE), obj_ilum_parameters)

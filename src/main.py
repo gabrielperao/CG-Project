@@ -20,8 +20,8 @@ from src.manager import ChunkManager
 from src.manager import IlluminationManager
 from src.object.misc import SkyBox
 
-window_width = 2100
-window_height = 1200
+window_width = 1000
+window_height = 600
 
 old_x_pos = 0
 old_y_pos = 0
@@ -30,13 +30,15 @@ camera = Camera(sensibility=0.15, step=0.5, fov=45.0, near=0.01, far=1000.0)
 render_polygons = False
 movement_camera = True
 movement_entities = True
+objs_ilum_parameters = {'ka': 0.2, 'kd': 0.6, 'ks': 0.4, 'ns': 5}
 
 
 def key_event(window, key, scancode, action, mods):
-    global render_polygons, movement_camera, movement_entities
+    global render_polygons, movement_camera, movement_entities, objs_ilum_parameters
 
     # tecla pressionada
     if action == glfw.PRESS:
+        # movimento da câmera
         if key == 87:  # W
             camera.movement = CameraMovement.FRONT
         if key == 83:  # S
@@ -61,6 +63,24 @@ def key_event(window, key, scancode, action, mods):
         # ativa ou desativa o modo de movimento das entidades
         if key == 77:  # M
             movement_entities = False if movement_entities else True
+
+        # alteração dos parâmetros de iluminação nos objetos
+        if key == 85:  # U
+            objs_ilum_parameters['ka'] += 0.05
+        if key == 74:  # J
+            objs_ilum_parameters['ka'] -= 0.05 if objs_ilum_parameters['ka'] >= 0.05 else 0
+        if key == 73:  # I
+            objs_ilum_parameters['kd'] += 0.05
+        if key == 75:  # K
+            objs_ilum_parameters['kd'] -= 0.05 if objs_ilum_parameters['kd'] >= 0.05 else 0
+        if key == 79:  # O
+            objs_ilum_parameters['ks'] += 0.05
+        if key == 76:  # L
+            objs_ilum_parameters['ks'] -= 0.05 if objs_ilum_parameters['ks'] >= 0.05 else 0
+        if key == 89:  # Y
+            objs_ilum_parameters['ns'] += 0.5
+        if key == 72:  # H
+            objs_ilum_parameters['ns'] -= 0.5 if objs_ilum_parameters['ns'] > 0.5 else 0
 
     # tecla liberada
     if action == glfw.RELEASE:
@@ -103,7 +123,7 @@ def main():
     illumination = IlluminationManager(program, 20)
 
     # inicialização do chunk
-    chunk = ChunkManager.generate_chunk(0, 0, illumination)
+    chunk = ChunkManager.generate_chunk(0, 0, illumination, objs_ilum_parameters)
     chunk.build(program)
 
     # inicialização do Skybox
@@ -135,6 +155,7 @@ def main():
 
         # renderização e atualização do chunk
         chunk.render(window_height, window_width, camera)
+        chunk.update_ilum_parameters(objs_ilum_parameters)
         if movement_entities:
             chunk.update_entities(count)
             count = (count + 1) % 30

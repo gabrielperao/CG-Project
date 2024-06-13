@@ -18,3 +18,7 @@
 - Pressione P para ativar/desativar o modo de malha poligonal;
 - Pressione M para ativar/desativar a movimentação das entidades;
 - Pressione Esc para mostrar/esconder o cursor;
+- Pressione U e J para incrementar e decrementar a luz ambiente dos blocos;
+- Pressione I e K para incrementar e decrementar a reflexão difusa dos blocos;
+- Pressione O e L para incrementar e decrementar a reflexão especular dos blocos;
+- Pressione Y e H para incrementar e decrementar o expoente da reflexão especular dos blocos;

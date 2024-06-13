@@ -9,8 +9,9 @@ class Chunk:
     SIZE = (16, 64, 16)
     OBJ_SIZE = 1  # depende do arquivo ".obj"
 
-    def __init__(self, index_x, index_z, illumination):
+    def __init__(self, index_x, index_z, illumination, objs_ilum_parameters):
         self.illumination = illumination
+        self.obj_ilum_parameters = objs_ilum_parameters
         self.index_x = index_x
         self.index_z = index_z
 
@@ -61,22 +62,22 @@ class Chunk:
         return coordinate * self.OBJ_SIZE
 
     @staticmethod
-    def __build_object(program, object_code, index, coord, illumination):
+    def __build_object(program, object_code, index, coord, illumination, obj_ilum_parameters):
         obj = None
         if object_code == ObjectId.GRASS:
-            obj = GrassBlock(program, index, coord)
+            obj = GrassBlock(program, index, coord, obj_ilum_parameters)
         elif object_code == ObjectId.DIRT:
-            obj = DirtBlock(program, index, coord)
+            obj = DirtBlock(program, index, coord, obj_ilum_parameters)
         elif object_code == ObjectId.STONE:
-            obj = StoneBlock(program, index, coord)
+            obj = StoneBlock(program, index, coord, obj_ilum_parameters)
         elif object_code == ObjectId.COBBLESTONE:
-            obj = CobblestoneBlock(program, index, coord)
+            obj = CobblestoneBlock(program, index, coord, obj_ilum_parameters)
         elif object_code == ObjectId.WOOD:
-            obj = WoodBlock(program, index, coord)
+            obj = WoodBlock(program, index, coord, obj_ilum_parameters)
         elif object_code == ObjectId.LEAF:
-            obj = LeafBlock(program, index, coord)
+            obj = LeafBlock(program, index, coord, obj_ilum_parameters)
         elif object_code == ObjectId.GLASS:
-            obj = GlassBlock(program, index, coord)
+            obj = GlassBlock(program, index, coord, obj_ilum_parameters)
         elif object_code == ObjectId.TORCH:
             obj = Torch(program, index, coord, illumination)
         elif object_code == ObjectId.FLOWER:
@@ -92,8 +93,15 @@ class Chunk:
         for index, object_code in np.ndenumerate(self.map):
             if object_code != ObjectId.EMPTY:
                 coord = self.__calculate_object_coordinate(index, object_code)
-                obj = self.__build_object(program, object_code, index, coord, self.illumination)
+                obj = self.__build_object(program, object_code, index, coord, self.illumination,
+                                          self.obj_ilum_parameters)
                 self.objects.append(obj)
+
+    def update_ilum_parameters(self, new_objs_ilum_parameters):
+        for obj in self.objects:
+            if isinstance(obj, Block):
+                obj.set_surface_illumination_proprieties(new_objs_ilum_parameters['ka'], new_objs_ilum_parameters['kd'],
+                                                         new_objs_ilum_parameters['ks'], new_objs_ilum_parameters['ns'])
 
     def __has_block(self, position):
         return (self.map[position] >= ObjectId.GRASS) and (self.map[position] <= ObjectId.WOOD)

@@ -8,8 +8,8 @@ import random
 class ChunkManager:
 
     @staticmethod
-    def __generate_base_chunk(index_x, index_z, illumination):
-        chunk = Chunk(index_x, index_z, illumination)
+    def __generate_base_chunk(index_x, index_z, illumination, objs_ilum_parameters):
+        chunk = Chunk(index_x, index_z, illumination, objs_ilum_parameters)
         scenary_size: int = 16
         for i in range(scenary_size):
             for j in range(scenary_size):
@@ -23,8 +23,8 @@ class ChunkManager:
         return chunk
 
     @classmethod
-    def generate_chunk(cls, index_x, index_z, illumination) -> Chunk:
-        base_chunk = cls.__generate_base_chunk(index_x, index_z, illumination)
+    def generate_chunk(cls, index_x, index_z, illumination, objs_ilum_parameters) -> Chunk:
+        base_chunk = cls.__generate_base_chunk(index_x, index_z, illumination, objs_ilum_parameters)
         HouseBuilder.build(base_chunk, 1, 1, 1)
         TreeBuilder.build(base_chunk, 10, 1, 10)
         GardenBuilder.build(base_chunk, 0, 1, 0)

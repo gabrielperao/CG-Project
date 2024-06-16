@@ -14,6 +14,8 @@ class Slime(GameEntity):
                          GPUDataManager().get_initial_index_for_object_id(ObjectId.SLIME),
                          GPUDataManager().get_size_index_for_object_id(ObjectId.SLIME))
 
+        super().set_surface_illumination_proprieties(1.0, 0.0, 0.0, 5)
+
         # inicializa a iluminação do bloco
         self.illumination = illumination
         self.illumination.add_source(list(coord), [0.05, 0.85, 0.47])

@@ -12,9 +12,9 @@ class Torch(GameObject):
                          GPUDataManager().get_initial_index_for_object_id(ObjectId.TORCH),
                          GPUDataManager().get_size_index_for_object_id(ObjectId.TORCH))
 
-        super().set_surface_illumination_proprieties(1.0, 1.0, 1.0, 5)
+        super().set_surface_illumination_proprieties(1.0, 0.0, 0.0, 5)
 
         # inicializa a iluminação do bloco
         ilum_coord = list(coord.copy())
-        ilum_coord[1] += 1
+        ilum_coord[1] += 0.62
         illumination.add_source(ilum_coord, [1.0, 1.0, 0.65])

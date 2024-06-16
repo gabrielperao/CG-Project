@@ -19,6 +19,10 @@ class GameObject:
         self.loc_color = glGetUniformLocation(self.program, "color")
 
         self.texture_id = texture_id
+        self.ka = 0.0
+        self.kd = 0.0
+        self.ks = 0.0
+        self.ns = 1
 
     def __calculate_gpu_matrix(self, gpu_var_name, matrix_function, *args):
         matrix = matrix_function(*args)
@@ -34,13 +38,21 @@ class GameObject:
         self.coord = new_coord
 
     def set_surface_illumination_proprieties(self, ka, kd, ks, ns):
-        GpuDataHelper.send_var_to_gpu(self.program, ka, "ka")
-        GpuDataHelper.send_var_to_gpu(self.program, kd, "kd")
-        GpuDataHelper.send_var_to_gpu(self.program, ks, "ks")
-        GpuDataHelper.send_var_to_gpu(self.program, ns, "ns")
+        self.ka = ka
+        self.kd = kd
+        self.ks = ks
+        self.ns = ns
+
+    def __send_gpu_surface_illumination_proprieties(self):
+        GpuDataHelper.send_var_to_gpu(self.program, self.ka, "ka")
+        GpuDataHelper.send_var_to_gpu(self.program, self.kd, "kd")
+        GpuDataHelper.send_var_to_gpu(self.program, self.ks, "ks")
+        GpuDataHelper.send_var_to_gpu(self.program, self.ns, "ns")
 
     def render(self, window_height, window_width, camera, scale: list = (1.0, 1.0, 1.0),
                rotate: list = (1.0, 0.0, 0.0), angle: float = 0.0, faces: list = (True, True) * 3):
+        self.__send_gpu_surface_illumination_proprieties()
+
         # cálculo das matrizes do objeto e envio para a GPU
         model_matrix = self.__calculate_gpu_matrix("model", MatrixHelper.matrix_model, self.coord, scale, rotate, angle)
         self.__calculate_gpu_matrix("view", MatrixHelper.matrix_view, camera.position, camera.target, camera.up)

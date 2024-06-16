@@ -20,8 +20,8 @@ from src.manager import ChunkManager
 from src.manager import IlluminationManager
 from src.object.misc import SkyBox
 
-window_width = 1000
-window_height = 600
+window_width = 1300
+window_height = 700
 
 old_x_pos = 0
 old_y_pos = 0
@@ -127,7 +127,7 @@ def main():
     chunk.build(program)
 
     # inicialização do Skybox
-    skybox = SkyBox(program, camera.position)
+    skybox = SkyBox(program, camera.position, objs_ilum_parameters['ka'])
 
     # ouve os eventos do teclado e mouse
     glfw.set_key_callback(window, key_event)
@@ -152,8 +152,9 @@ def main():
 
         # renderização e atualização do skybox
         skybox.dynamic_render(window_height, window_width, camera)
+        skybox.set_surface_illumination_proprieties(objs_ilum_parameters['ka'])
 
-        # renderização e atualização do chunk
+        # renderização e atualização do chunks
         chunk.render(window_height, window_width, camera)
         chunk.update_ilum_parameters(objs_ilum_parameters)
         if movement_entities:

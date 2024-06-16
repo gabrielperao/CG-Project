@@ -9,12 +9,17 @@ class SkyBox(GameObject):
 
     SCALE = (150.0, 150.0, 150.0)
 
-    def __init__(self, program, coord: list):
+    def __init__(self, program, coord: list, ka_ilum_parameter: float):
         TEXTURE_ID: TextureId = TextureId.SKYBOX_TEXTURE
         index_in_chunk = ()
         super().__init__(program, coord, TEXTURE_ID, index_in_chunk,
                          GPUDataManager().get_initial_index_for_object_id(ObjectId.SKYBOX),
                          GPUDataManager().get_size_index_for_object_id(ObjectId.SKYBOX))
+
+        self.set_surface_illumination_proprieties(ka_ilum_parameter)
+
+    def set_surface_illumination_proprieties(self, ka):
+        super().set_surface_illumination_proprieties(ka, 0.0, 0.0, 1.0)
 
     def dynamic_render(self, window_height, window_width, camera):
         self.__update_coord(camera.position)

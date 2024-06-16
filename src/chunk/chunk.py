@@ -81,7 +81,7 @@ class Chunk:
         elif object_code == ObjectId.TORCH:
             obj = Torch(program, index, coord, illumination)
         elif object_code == ObjectId.FLOWER:
-            obj = Flower(program, index, coord)
+            obj = Flower(program, index, coord, obj_ilum_parameters)
         elif object_code == ObjectId.SLIME:
             obj = Slime(program, coord, illumination)
         else:
@@ -99,7 +99,7 @@ class Chunk:
 
     def update_ilum_parameters(self, new_objs_ilum_parameters):
         for obj in self.objects:
-            if isinstance(obj, Block):
+            if isinstance(obj, Block) or isinstance(obj, Flower):
                 obj.set_surface_illumination_proprieties(new_objs_ilum_parameters['ka'], new_objs_ilum_parameters['kd'],
                                                          new_objs_ilum_parameters['ks'], new_objs_ilum_parameters['ns'])
 

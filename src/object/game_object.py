@@ -1,3 +1,4 @@
+import numpy as np
 from OpenGL.GL import *
 from src.util.helper import GpuDataHelper
 from src.util.helper import MatrixHelper
@@ -23,6 +24,11 @@ class GameObject:
         matrix = matrix_function(*args)
         loc = glGetUniformLocation(self.program, gpu_var_name)
         glUniformMatrix4fv(loc, 1, GL_TRUE, matrix)
+        return matrix
+
+    def __send_normal_matrix_to_gpu(self, normal_matrix):
+        normal_matrix_loc = glGetUniformLocation(self.program, "normalMatrix")
+        glUniformMatrix3fv(normal_matrix_loc, 1, GL_TRUE, normal_matrix)
 
     def update_coord(self, new_coord: list):
         self.coord = new_coord
@@ -36,10 +42,12 @@ class GameObject:
     def render(self, window_height, window_width, camera, scale: list = (1.0, 1.0, 1.0),
                rotate: list = (1.0, 0.0, 0.0), angle: float = 0.0, faces: list = (True, True) * 3):
         # cálculo das matrizes do objeto e envio para a GPU
-        self.__calculate_gpu_matrix("model", MatrixHelper.matrix_model, self.coord, scale, rotate, angle)
+        model_matrix = self.__calculate_gpu_matrix("model", MatrixHelper.matrix_model, self.coord, scale, rotate, angle)
         self.__calculate_gpu_matrix("view", MatrixHelper.matrix_view, camera.position, camera.target, camera.up)
         self.__calculate_gpu_matrix("projection", MatrixHelper.matrix_projection, window_height, window_width,
                                     camera.fov, camera.near, camera.far)
+        normal_matrix = np.linalg.inv(model_matrix[:3, :3].T)
+        self.__send_normal_matrix_to_gpu(normal_matrix)
 
         # renderizando a cada três vértices (triângulos) das faces desejadas
         for i in range(self.initial_index_for_gpu_data_array, self.max_gpu_data_array_index, 4):

@@ -17,4 +17,4 @@ class Torch(GameObject):
         # inicializa a iluminação do bloco
         ilum_coord = list(coord.copy())
         ilum_coord[1] += 1
-        illumination.add_font(ilum_coord, [1.0, 1.0, 0.65])
+        illumination.add_source(ilum_coord, [1.0, 1.0, 0.65])

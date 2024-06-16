@@ -16,8 +16,8 @@ class Slime(GameEntity):
 
         # inicializa a iluminação do bloco
         self.illumination = illumination
-        self.illumination.add_font(list(coord), [0.05, 0.85, 0.47])
-        self.font_index = self.illumination.get_num_fonts() - 1
+        self.illumination.add_source(list(coord), [0.05, 0.85, 0.47])
+        self.source_index = self.illumination.get_num_sources() - 1
 
     @staticmethod
     def __angle_velocity(time):
@@ -44,4 +44,4 @@ class Slime(GameEntity):
         self.update_scale(Slime.__scale_velocity(time, 30))
         self.update_position(Slime.__height_movement_velocity(time, 30))
 
-        self.illumination.update_font_position(self.font_index, self.coord)
+        self.illumination.update_source_position(self.source_index, self.coord)

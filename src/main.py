@@ -78,9 +78,9 @@ def key_event(window, key, scancode, action, mods):
         if key == 76:  # L
             objs_ilum_parameters['ks'] -= 0.05 if objs_ilum_parameters['ks'] >= 0.05 else 0
         if key == 89:  # Y
-            objs_ilum_parameters['ns'] += 0.5
+            objs_ilum_parameters['ns'] += 2
         if key == 72:  # H
-            objs_ilum_parameters['ns'] -= 0.5 if objs_ilum_parameters['ns'] > 0.5 else 0
+            objs_ilum_parameters['ns'] -= 2 if objs_ilum_parameters['ns'] >= 2 else 0
 
     # tecla liberada
     if action == glfw.RELEASE:

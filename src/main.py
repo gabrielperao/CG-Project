@@ -20,8 +20,8 @@ from src.manager import ChunkManager
 from src.manager import IlluminationManager
 from src.object.misc import SkyBox
 
-window_width = 1300
-window_height = 700
+window_width = 900
+window_height = 500
 
 old_x_pos = 0
 old_y_pos = 0
@@ -118,7 +118,6 @@ def main():
     gpu_manager = GPUDataManager(program)
     gpu_manager.configure()
 
-    # TODO: arrumar a direção de propagação da luz (não ta uniforme)
     # definição do sistema de iluminação
     illumination = IlluminationManager(program, 20)
 
@@ -151,7 +150,7 @@ def main():
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
         # renderização e atualização do skybox
-        skybox.dynamic_render(window_height, window_width, camera)
+        skybox.dynamic_render(window_height, window_width, camera, illumination)
         skybox.set_surface_illumination_proprieties(objs_ilum_parameters['ka'])
 
         # renderização e atualização do chunks

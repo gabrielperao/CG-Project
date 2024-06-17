@@ -6,7 +6,7 @@ from src.util.helper import MatrixHelper
 
 class GameObject:
     def __init__(self, program, coord: list, texture_id, index_in_chunk: tuple,
-                 initial_index_for_gpu_data_array: int, gpu_data_array_size: int):
+                 initial_index_for_gpu_data_array: int, gpu_data_array_size: int, source_lights: list):
         self.index_in_chunk = index_in_chunk
 
         self.program = program
@@ -19,6 +19,8 @@ class GameObject:
         self.loc_color = glGetUniformLocation(self.program, "color")
 
         self.texture_id = texture_id
+
+        self.source_lights = source_lights
         self.ka = 0.0
         self.kd = 0.0
         self.ks = 0.0
@@ -49,9 +51,11 @@ class GameObject:
         GpuDataHelper.send_var_to_gpu(self.program, self.ks, "ks")
         GpuDataHelper.send_var_to_gpu(self.program, self.ns, "ns")
 
-    def render(self, window_height, window_width, camera, scale: list = (1.0, 1.0, 1.0),
+    def render(self, window_height, window_width, camera, illumination, scale: list = (1.0, 1.0, 1.0),
                rotate: list = (1.0, 0.0, 0.0), angle: float = 0.0, faces: list = (True, True) * 3):
+        # envio dos valores de iluminação para a gpu
         self.__send_gpu_surface_illumination_proprieties()
+        illumination.send_lights_to_gpu(self.source_lights)
 
         # cálculo das matrizes do objeto e envio para a GPU
         model_matrix = self.__calculate_gpu_matrix("model", MatrixHelper.matrix_model, self.coord, scale, rotate, angle)

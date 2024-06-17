@@ -9,7 +9,7 @@ from src.manager import GPUDataManager
 class Slime(GameEntity):
     TEXTURE_ID: TextureId = TextureId.SLIME_TEXTURE
 
-    def __init__(self, program, coord: list, illumination):
+    def __init__(self, program, index_in_chunk: tuple, coord: list, illumination):
         super().__init__(program, coord, [1.0, 1.0, 1.0], [0.0, 1.0, 0.0], 0.0, self.TEXTURE_ID,
                          GPUDataManager().get_initial_index_for_object_id(ObjectId.SLIME),
                          GPUDataManager().get_size_index_for_object_id(ObjectId.SLIME))
@@ -17,8 +17,9 @@ class Slime(GameEntity):
         super().set_surface_illumination_proprieties(1.0, 0.0, 0.0, 5)
 
         # inicializa a iluminação do bloco
+        self.index_in_chunk = index_in_chunk
         self.illumination = illumination
-        self.illumination.add_source(list(coord), [0.05, 0.85, 0.47])
+        self.illumination.add_source(list(coord), [0.05, 0.85, 0.47], self.index_in_chunk)
         self.source_index = self.illumination.get_num_sources() - 1
 
     @staticmethod

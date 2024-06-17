@@ -9,7 +9,8 @@ class GameEntity(GameObject):
         self.scale = np.array(scale)
         self.rotate = rotate
         self.angle = angle
-        super().__init__(program, coord, texture_id, (0, 0, 0), initial_index_for_gpu_data_array, gpu_data_array_size)
+        super().__init__(program, coord, texture_id, (0, 0, 0), initial_index_for_gpu_data_array,
+                         gpu_data_array_size, [])
 
     def update_position(self, velocity: list):
         self.coord += velocity
@@ -24,9 +25,9 @@ class GameEntity(GameObject):
     def update_scale(self, rate: list):
         self.scale += rate
 
-    def render(self, window_height, window_width, camera, scale: list = (1.0, 1.0, 1.0),
+    def render(self, window_height, window_width, camera, illumination, scale: list = (1.0, 1.0, 1.0),
                rotate: list = (1.0, 0.0, 0.0), angle: float = 0.0, faces: list = (True, True) * 3):
         raise NotImplementedError("Entidades devem utilizar o método 'dynamic_render'")
 
-    def dynamic_render(self, window_height, window_width, camera):
-        super().render(window_height, window_width, camera, list(self.scale), self.rotate, self.angle)
+    def dynamic_render(self, window_height, window_width, camera, illumination):
+        super().render(window_height, window_width, camera, illumination, list(self.scale), self.rotate, self.angle)

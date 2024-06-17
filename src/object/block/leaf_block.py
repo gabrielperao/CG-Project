@@ -8,7 +8,8 @@ class LeafBlock(Block):
 
     TEXTURE_ID: TextureId = TextureId.LEAF_TEXTURE
 
-    def __init__(self, program, index_in_chunk, coord: list, obj_ilum_parameters):
+    def __init__(self, program, index_in_chunk, coord: list, obj_ilum_parameters, source_lights: list):
         super().__init__(program, coord, self.TEXTURE_ID, index_in_chunk,
                          GPUDataManager().get_initial_index_for_object_id(ObjectId.LEAF),
-                         GPUDataManager().get_size_index_for_object_id(ObjectId.LEAF), obj_ilum_parameters)
+                         GPUDataManager().get_size_index_for_object_id(ObjectId.LEAF),
+                         obj_ilum_parameters, source_lights)

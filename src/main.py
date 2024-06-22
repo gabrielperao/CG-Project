@@ -4,8 +4,8 @@ Universidade de São Paulo - Instituto de Ciências Matemáticas e de Computaç�
 2024
 
 Autoria de:
-    * Gabriel Barbosa de Amorim Perão
-    * Gabriel Natal Coutinho
+    * Gabriel Barbosa de Amorim Perão - 12677874
+    * Gabriel Natal Coutinho - 12543461
 """
 import numpy as np
 from OpenGL.GL import *
